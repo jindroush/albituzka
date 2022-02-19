@@ -1,4 +1,15 @@
 ﻿# albi bnl file decryptor, works also for some arabic downloads
+# part of https://github.com/jindroush/albituzka
+# bnl_dis.pl input_file [switches]
+# -extract - extracts mp3 files to current directory
+# -bitrate - computes mp3 files bitrate
+# -nosave - does not output any files
+
+# all files output to current directory:
+# *.mp3 - decrypted mp3 files
+# rbuf.dat - copy of input file, with read data overwritten by # character. It's used for coverage testing
+# bnl.json - output of BNL data structures. This file is consumed by bnl_creator.pl
+
 # everything is guessed from downloadable files
 # 11.01.2022 jindroush	first so-so version
 # 08.02.2022 jindroush	decoding of type4 quiz question
@@ -408,17 +419,24 @@ sub media_tbl()
 	my @key = &keygen( \@pre_key );
 	my $key_length = scalar @key;
 
+	my $fptr;
 REPT:
 	sysseek( IN, $ptr, 0 );
 	sysread( IN, $buf, 8 );
 	&mark_rbuf( 8 );
 	my( $d1, $d2 ) = unpack( "VV", $buf );
-	if( $d2 == 0 )
+	$fptr = $d1 unless( defined $fptr );
+
+	#this basically checks for the end of media table
+	#because the number of media files is not stored anywhere (the one in the header is usually shorter)
+	#we check if there is end-of-table in form of zero-padding or if the end of the table is past start of first mp3 file
+	if( $d2 == 0 || $ptr+4 >= $fptr )
 	{
 		printf( "\textracted 0000 to %04d media files\n", $cnt - 1);
 
 		if( scalar keys %BRS )
 		{
+			#outputting the most common bitrate combination
 			my $fk = ( sort { $BRS{$b} <=> $BRS{$a} } keys %BRS )[0];
 			my $perc = int( $BRS{$fk} * 100 / $cnt );
 			print "\tmp3s_br: $fk: $perc%\n";
@@ -426,7 +444,7 @@ REPT:
 		return;
 	}
 
-	printf( "\t%04d) %08X-%08X (%08X)\n", $cnt, $d1, $d2, $d2-$d1 );
+	#printf( "\t%04d) %08X-%08X (%08X)\n", $cnt, $d1, $d2, $d2-$d1 );
 
 	my $ofn = sprintf( "media_%04d.mp3", $cnt );
 

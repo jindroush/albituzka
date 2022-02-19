@@ -1,9 +1,13 @@
-### Info ceske
+### Lokální dokumentace
+- albituzka_firmware.pdf - popis zjištěných informací o firmware tužky
+- albituzka_soft.xlsx - přehled všech stažených BNL souborů, s několika základními charakteristikami
+
+### Info české
 - https://tapkame.cz/kouzelne-cteni-od-albi-rozhovor-o-projektu-pripravovanych-novinkach-vcetne-anglicke-verze-i-uzitecne-informace-pro-ctenare/
 - https://tatageek.blog/2021/01/28/jak-funguje-albi-tuzka/
 - https://forum.root.cz/index.php?topic=22676.0
 
-### Info cizi
+### Info cizí
 - https://github.com/entropia/tip-toi-reveng
 - https://github.com/marian-m12l/s9ke-toolchain
 
@@ -20,10 +24,10 @@
 - SI https://www.zabavnoucenje.com/si/datoteke-za-kuku
 - HR https://www.zabavnoucenje.com/hr/datoteke-za-kuku
 
-### Kompatibilini soubory bnl (nejake anglicko-arabske)
+### Kompatibilní soubory bnl (nějaké anglicko-arabské)
 - http://www.speakitbooks.com/books.html
 
-### Nekompatibilni soubory bnl
+### Nekompatibilní soubory bnl
 - https://www.jlb.com.sg/download/for-ppw-series-1-5-.html
 - https://einstylo.ca/Download2.php?reader=2%20&%20lang=2
 - https://www.dahhsin.com.tw/downLoad.php?lv01_type=PEN-BOOK
