@@ -1,6 +1,6 @@
 ### Lokální dokumentace
 - [albituzka_firmware.pdf](albituzka_firmware.pdf) - popis zjištěných informací o firmware tužky
-- albituzka_soft.xlsx - přehled všech stažených BNL souborů, s několika základními charakteristikami
+- [albituzka_soft.xlsx](albituzka_soft.xlsx) - přehled všech stažených BNL souborů, s několika základními charakteristikami
 
 ### Info české
 - https://tapkame.cz/kouzelne-cteni-od-albi-rozhovor-o-projektu-pripravovanych-novinkach-vcetne-anglicke-verze-i-uzitecne-informace-pro-ctenare/
