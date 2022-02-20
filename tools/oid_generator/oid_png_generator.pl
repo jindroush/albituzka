@@ -23,7 +23,7 @@ use strict;
 use warnings;
 use Imager;
 use Imager::Fill;
-my @oid_tbl_raw2int;
+my @oid_tbl_int2raw;
 &oid_converter_init();
 
 #defaults
@@ -37,7 +37,7 @@ if( $code =~ /^0x(.+)/ )
 {
 	$code = hex $1;
 }
-my $raw_code = $oid_tbl_raw2int[$code];
+my $raw_code = $oid_tbl_int2raw[$code];
 die "can't find raw code for $code" unless $raw_code;
 my $ofn = "oid_" . $code . ".png";
 
@@ -179,8 +179,8 @@ sub create_OID_raster()
 
 sub oid_converter_init()
 {
-	#index to the array is RAW, printed code. Value in the array is INTERNAL pen code (index to OID table)
-	@oid_tbl_raw2int = (
+	#index to the array is INTERNAL pen code (index to OID table). Value in the array is RAW, printed code
+	@oid_tbl_int2raw = (
 		4..7, 12, 15, 20..23, 28, 36..39, 60, 68, 69, 84, 85, 100, 101, 196..199, 204, 207, 212..215,
 		223, 228..231, 236, 252, 256, 257, 259, 272, 273, 275, 320, 321, 323, 336, 337, 339, 384..387,
 		400..403, 449..451, 465..467, 768, 769, 771, 776..779, 784, 792..795, 801, 808, 809, 816, 817,
