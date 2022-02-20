@@ -65,8 +65,8 @@ open OUT, ">perl_code.txt" or die;
 
 print OUT "sub oid_converter_init()\n";
 print OUT "{\n";
-print OUT "\t#index to the array is RAW, printed code. Value in the array is INTERNAL pen code (index to OID table)\n";
-print OUT "\t\@oid_tbl_raw2int = (\n";
+print OUT "\t#index to the array is INTERNAL pen code (index to OID table). Value in the array is RAW, printed code\n";
+print OUT "\t\@oid_tbl_int2raw = (\n";
 
 my $line;
 foreach my $o ( @o )
