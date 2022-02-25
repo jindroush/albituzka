@@ -24,7 +24,7 @@
 - SI https://www.zabavnoucenje.com/si/datoteke-za-kuku
 - HR https://www.zabavnoucenje.com/hr/datoteke-za-kuku
 
-### Kompatibilní soubory bnl (nějaké anglicko-arabské)
+### Kompatibilní soubory bnl (nějaké anglicko-arabské učebnice)
 - http://www.speakitbooks.com/books.html
 
 ### Nekompatibilní soubory bnl
