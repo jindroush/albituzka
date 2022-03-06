@@ -1,5 +1,6 @@
 ### Lokální dokumentace
 - [albituzka_firmware.pdf](albituzka_firmware.pdf) - popis zjištěných informací o firmware tužky
+- [albituzka_nastroje.pdf](albituzka_nastroje.pdf) - popis skriptů v adresáři tools a jak je rozběhat a obsluhovat
 - [albituzka_soft.xlsx](albituzka_soft.xlsx) - přehled všech stažených BNL souborů, s několika základními charakteristikami
 
 ### Info české
