@@ -67,15 +67,14 @@ printf( "ver: %s\n", $str );
 my $chip = pack( "C*", reverse unpack( "C*", substr( $buf, 0x100, 7 ) ) );
 printf "chip: %s\n", $chip;
 
-my( $w1, $w2, $w3, $int, $w4, $w5, $w6, $w7 ) = unpack( "vvvVvvvv", substr( $buf, 0x108, 18 ) );
-printf "unk1: %04X\n", $w1;
-printf "unk2: %04X\n", $w2;
-printf "unk3: %04X\n", $w3;
-printf "interrupt_table addr: %08X\n", $int;
-printf "unk4: %04X\n", $w5;
+my( $w1, $w2, $w3, $int, $w4, $w5, $dw6 ) = unpack( "vvvVvvV", substr( $buf, 0x108, 18 ) );
+printf "modules count: %04X\n", $w1;
+printf "project id: %04X\n", $w2;
+printf "PRAM length: %04X\n", $w3;
+printf "PRAM start: %08X\n", $int;
+printf "PRAM addr: %04X\n", $w4;
 printf "unk5: %04X\n", $w5;
-printf "unk6: %04X\n", $w6;
-printf "unk7: %04X\n", $w7;
+printf "unk6: %08X\n", $dw6;
 
 &extract_1bin();
 &extract_2bin();
@@ -130,20 +129,23 @@ sub extract_2bin()
 	$fptr = $f if( ! defined $fptr );
 	goto REPT if( $ptr < $fptr );
 	
-	my $cnt = 0;
+	my $cnt = -1;
 	foreach my $ar ( @d )
 	{
 		my $f = $$ar[0];
 		my $l = $$ar[1];
 
+		$cnt++;
+
 		if( $save_files )
 		{	
+			printf( "2bin [%04X] %d) %08X (%08X) [%08X]\n", $cnt, $cnt, $f, $f-$b2bm, $f + $l );
+
 			open OUT, ">" . sprintf( "2-%03d.mp3", $cnt ) or die;
 			binmode OUT;
 			print OUT substr( $buf, $f, $l );
 			close OUT;
 		}
-		$cnt++;
 	}
 	print "2bin found ", scalar( @d ), " mp3s\n";
 }
@@ -159,7 +161,8 @@ sub extract_3bin()
 
 	#print join( "-", map( sprintf( "%08X", $_ ), @dws )), "<\n";
 
-	my $cnt = 0;
+	printf "3bin/part 1 (1st mp3s) follows [%08X]\n", 0x30400+$b3bm;
+	my $cnt = -1;
 	for( my $ptr = 0x30400+$b3bm; $ptr < 0x30500 + $b3bm; $ptr += 8 )
 	{
 		$cnt++;
@@ -170,51 +173,52 @@ sub extract_3bin()
 
 		if( $l && $save_files )
 		{
-			printf( "%d) %08X [%08X]\n", $cnt, $f, $f + $l );
+			printf( "[%04X] %d) %08X [%08X]\n", $cnt, $cnt, $f, $f + $l );
         		open OUT, ">" . sprintf( "31_%03d.mp3", $cnt ) or die;
 			binmode OUT;
 			print OUT substr( $buf, $f, $l );
 			close OUT;
 		}
 	}
-	print "3bin/part 1 found $cnt mp3s\n";
 
+	printf "3bin/part 2 (unknown) follows [%08X]\n", $dws[1];
 	$cnt = 0;
-	for( my $ptr = $dws[0]; $ptr < $dws[0]+0x100; $ptr += 8 )
+	for( my $ptr = $dws[0]; $ptr < $dws[0]+0x200; $ptr += 4 )
 	{
-		my ( $f, $l ) = unpack( "VV", substr( $buf, $ptr, 8 ) );
-		next if( $f == 0x0 || $f == 0xFFFFFFFF );
-		$cnt++;
+		my $f = unpack( "V", substr( $buf, $ptr, 4 ) );
 		if( $save_files )
 		{
-			printf( "%d) %08X/%08X\n", $cnt, $f, $l );
+			printf( "[%04X] %d) %08X\n", $cnt, $cnt, $f );
 		}
+		$cnt++;
 	}
-	print "3bin/part 2 found $cnt records\n";
 
-	$cnt = 0;
+	printf "3bin/part 3 (2nd mp3s) follows [%08X]\n", $dws[1];
+	$cnt = -1;
 	for( my $ptr = $dws[1]; $ptr < $dws[1]+0x500; $ptr += 8 )
 	{
+		$cnt++;
 		my ( $f, $l ) = unpack( "VV", substr( $buf, $ptr, 8 ) );
 		next if( $f == 0x0 || $f == 0xFFFFFFFF );
 
 		$f += $b3bm;
 
-		$cnt++;
 		if( $l && $save_files )
 		{
-			printf( "%d) %08X [%08X]\n", $cnt, $f, $f + $l );
+			printf( "[%04X] %d) %08X [%08X]\n", $cnt, $cnt, $f, $f + $l );
 			open OUT, ">" . sprintf( "33_%03d.mp3", $cnt ) or die;
 			binmode OUT;
 			print OUT substr( $buf, $f, $l );
 			close OUT;
 		}
 	}
-	print "3bin/part 3 found $cnt mp3s\n";
 
-	$cnt = 0;
+	printf "3bin/part 4 (string tbl) follows [%08X]\n", $dws[2];
+	$cnt = -1;
 	for( my $ptr = $dws[2]; $ptr < $dws[2]+0x100; $ptr += 8 )
 	{
+		$cnt++;
+
 		my ( $f, $l ) = unpack( "VV", substr( $buf, $ptr, 8 ) );
 		next if( $f == 0x0 || $f == 0xFFFFFFFF );
 		#printf( "%08X\n", $f );
@@ -222,17 +226,14 @@ sub extract_3bin()
 		$f += $b3bm;
 		next if( $l == 0 );
 
-		$cnt++;
-
 		my $str = substr( $buf, $f, $l * 2 );
 		$str = decode( "utf16le", $str );
 		if( $save_files )
 		{
-			printf( "%d) %08X [%08X] %s\n", $cnt, $f, $f + $l, $str );
+			printf( "[%02X] %d) %08X [%08X] %s\n", $cnt, $cnt, $f, $f + $l, $str );
 		}
 	
 	}
-	print "3bin/part 4 found $cnt strings\n";
 
 	my @ws32 = unpack( "v*", substr( $buf, $b3bm + 0x30200, 16*2 ) );
 	printf( "3bin/30200: %s\n", join( "-", (map sprintf( "%04X",$_ ), @ws32 ) ) );
