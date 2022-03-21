@@ -2,7 +2,7 @@
 ### Prostředí
 Všechny nástroje byly napsány pod Windows 10, na ActiveState Perlu 5.24.3. Pro běh na jiném OS by neměly být teoreticky
 potřebné žádné úpravy. Je možné, že bude nutno doinstalovávat některé moduly, které nejsou typickou součástí instalace,
-např. Imager, Imager::Fill, MP3::Info a další. Jakým způsobem doinstalovat moduly lze dohledat v dokumentaci.
+např. Imager, Imager::Fill, YAML, MP3::Info a další. Jakým způsobem doinstalovat moduly lze dohledat v dokumentaci.
 Byl proveden i test na Windows 7, Strawberry Perl, vše je funkční. První pokus o dokumentaci skriptů lze dohledat v docs/albituzka_nastroje.pdf
 Všechny nástroje jsou pouze příkazovo-řádkové, nemají žádné grafické rozhraní.
 
