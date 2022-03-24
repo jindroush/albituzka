@@ -1,4 +1,4 @@
-# albituzka
-V adresáři final je hotová knížka.
+# 
+bnl.bnl je zvukový soubor pro pero.
 
-V adresáři podklady jsou podkladová data.
+slepicka.pdf nebo slepicka.png jsou tisková data - černobílá, 1200dpi. Nastavení tisku musí být centrovat, nezmenšovat, A4.
