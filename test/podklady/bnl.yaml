@@ -1,0 +1,901 @@
+#toto je ukazkovy YAML soubor pro bnl_creator.pl
+#seskladal jindroush, k nalezeni na https://github.com/jindroush/albituzka
+#
+#Dilo je licencovano pod CC-BY SA
+#Uvedte puvod-Zachovejte licenci 4.0 Mezinarodni (CC BY-SA 4.0) 
+#https://creativecommons.org/licenses/by-sa/4.0/deed.cs
+#
+#scenar:
+#  pohadka je lidova, text prevzat a mirne upraven ze stranek ZS a MS Pysel z Trebice
+#
+#grafika:
+#  obrazky BaraK
+#
+#zvuk:
+#  texty byly namluveny strojove pomoci free verze MS Speech Studia z Azure (hlasy Antonin a Vlasta)
+#  zvukove efekty stazeny z freesound.org
+#  editovano a nakrajeno v Audacity
+
+
+#zde zacina hlavicka (na --- nesahat, oddeluje sekce!)
+---
+
+#cislo knihy, OID kod k nemu musi byt vytisten na 'zapinacim' tlacitku
+book_id: 0x0803
+
+#tyto OID jsou zabudovane a nejsou potreba z hlediska generovani BNL souboru
+#jsou zde jen kvuli generovani OIDu k tisku (generator je prida do generate_oids.yaml)
+sys_icons:
+  - volume_up
+  - volume_down
+  - stop
+
+#sifrovani knihy (toto by melo nechat temer vse odsifrovane)
+encryption:
+  header_key: 0x00000100
+  prekey:
+    - 0x00
+    - 0x00
+    - 0x00
+    - 0x00
+    - 0x00
+    - 0x00
+    - 0x00
+    - 0x00
+    - 0x00
+    - 0x00
+    - 0x00
+    - 0x00
+    - 0x00
+    - 0x00
+    - 0x00
+    - 0x00
+  prekey_dw: 0x000000F5
+
+#prepinaci tlacitka mezi mody
+#mod 0 a 1 jsou stejne, prepina se mezi nimi pri dvojitem tuknuti na stejny kod
+book_mode_read:
+  mode_0:
+    - mod_zakladni.mp3
+  mode_2:
+    - mod_vice_inf.mp3
+
+#zvuk, ktery se ozve pri prvnim stisknuti Start tlacitka - totez by melo byt na oid_x0000
+start_button_1st_read:
+  mode_0:
+    - kniha_vitej1.mp3
+  mode_1:
+    - kniha_vitej1.mp3
+  mode_2:
+    - kniha_vitej1.mp3
+
+#zvuk, ktery se ozve pri druhem stisknuti Start tlacitka
+start_button_2nd_read:
+  mode_0:
+    - kniha_vitej2.mp3
+  mode_1:
+    - kniha_vitej2.mp3
+  mode_2:
+    - kniha_vitej2.mp3
+
+#nezname/nepopsane tabulky
+#radeji na ne nesahejte, max si vymente zvukove soubory
+#slysitelne prehravaji jen 'znelku' a negativni a pozitivni zvuky, 
+#ale neni zrejme, proc je to tolikrat opakovano a kdy se dany zvuk vyvola
+unk_tbl_ptr_16:
+  - oid_x01A6_chime
+  - oid_x01A7_chime
+  - oid_x01A8_chime
+unk_tbl_ptr_27:
+  - oid_x01A9_buzz
+  - oid_x01AA_buzz
+  - oid_x01AB_buzz
+  - oid_x01AC_buzz
+  - oid_x01AD_buzz
+unk_tbl_ptr_28:
+  - oid_x01AE_ting
+  - oid_x01AF_ting
+  - oid_x01B0_ting
+unk_tbl_ptr_29:
+  - oid_x01B5_buzz
+  - oid_x01B6_buzz
+  - oid_x01B7_buzz
+
+
+#odtud jsou informace o kvizu
+---
+#reakce na spatnou odpoved
+#proc je rozdeleno do dvou poli a jak jsou pole dlouha, to neni zatim vysvetleno
+quiz_neg1:
+  - oid_x019B_buzz
+  - oid_x019C_buzz
+  - oid_x019D_buzz
+quiz_neg2:
+  - oid_x019E_buzz_znovu
+  - oid_x019F_buzz_jednou
+  - oid_x01A0_buzz
+  - oid_x01A1_buzz_znovu
+  - oid_x01A2_buzz_jednou
+  - oid_x01A3_buzz
+
+#reakce na spravnou odpoved
+#proc je rozdeleno do dvou poli a jak jsou pole dlouha, to neni zatim vysvetleno
+quiz_pos1:
+  - oid_x0190_ting
+  - oid_x0191_ting
+quiz_pos2:
+  - oid_x0193_ting_vyborne
+  - oid_x0194_ting_velmidobre
+  - oid_x0195_ting
+  - oid_x0196_ting_vyborne   
+  - oid_x0197_ting_velmidobre
+  - oid_x0198_ting
+  - oid_x0199_ting_vyborne   
+  - oid_x019A_ting_velmidobre
+
+#vyhodnoceni kvizu. Ma vzdy N+1 hodnot pro N otazek
+#je to 0,1,2,3,4 spravnych odpovedi a pak vsechny spravne
+quiz_results:
+  - oid_x01B8_kviz_vysledek_0
+  - oid_x01B9_kviz_vysledek_1
+  - oid_x01BA_kviz_vysledek_2
+  - oid_x01BB_kviz_vysledek_3
+  - oid_x01BC_kviz_vysledek_4
+  - oid_x01BD_kviz_vysledek_5
+
+#zde zacinaji vlastni stranky kvizu
+quizes:
+    #kolik otazek bude v kvizu polozeno
+  - q_asked: 0x0005
+    #prvni kviz je vzdy oid 100! Zvuk muze byt libovolny oid, ale dava se shodny
+    q_oid: oid_100_kviz1
+    #typ kvizu, znamy je 0 a 4, viz dokumentace
+    q_type: 0x0000
+    #nedobre zdokumentovano, viz dokumentace
+    q_unk: 0x0000
+    #zde jsou jednotlive otazky
+    questions:
+        #toto jsou oidy spravnych odpovedi
+      - q1_good_reply_oids:
+          - oid_11001_slepicka
+          - oid_11007_slepicka
+          - oid_11011_slepicka
+          - oid_11014_slepicka
+          - oid_11018_slepicka
+          - oid_11023_slepicka
+          - oid_11026_slepicka
+          - oid_11030_slepicka
+          - oid_11034_slepicka
+        #toto je oid pro zvuk otazky
+        q1_oid: oid_13000_kdo_se_rozdeli
+        #nezname
+        q1_unk: 0
+
+      - q1_good_reply_oids:
+          - oid_11002_kohoutek
+          - oid_11006_kohoutek_lakomec
+          - oid_11010_kohoutek
+        q1_oid: oid_13001_kdo_je_lakomec
+        q1_unk: 0
+
+      - q1_good_reply_oids:
+          - oid_11033_louka
+          - oid_11001_slepicka
+          - oid_11007_slepicka
+          - oid_11011_slepicka
+          - oid_11014_slepicka
+          - oid_11018_slepicka
+          - oid_11023_slepicka
+          - oid_11026_slepicka
+          - oid_11030_slepicka
+          - oid_11034_slepicka
+        q1_oid: oid_13002_kdo_chce_vodu
+        q1_unk: 0
+
+      - q1_good_reply_oids:
+          - oid_11015_studna
+        q1_oid: oid_13003_kdo_chce_satek
+        q1_unk: 0
+
+      - q1_good_reply_oids:
+          - oid_11019_svadlenka
+        q1_oid: oid_13004_kdo_dal_satek
+        q1_unk: 0
+
+      - q1_good_reply_oids:
+          - oid_11019_svadlenka
+        q1_oid: oid_13005_kdo_chce_botu
+        q1_unk: 0
+
+      - q1_good_reply_oids:
+          - oid_11022_svec
+        q1_oid: oid_13006_kdo_dal_botu
+        q1_unk: 0
+
+      - q1_good_reply_oids:
+          - oid_11022_svec
+        q1_oid: oid_13007_kdo_chce_jelito
+        q1_unk: 0
+
+      - q1_good_reply_oids:
+          - oid_11027_prasatko
+        q1_oid: oid_13008_kdo_dal_jelito
+        q1_unk: 0
+
+      - q1_good_reply_oids:
+          - oid_11027_prasatko
+        q1_oid: oid_13009_kdo_chce_mleko
+        q1_unk: 0
+
+      - q1_good_reply_oids:
+          - oid_11031_kravicka
+        q1_oid: oid_13010_kdo_dal_mleko
+        q1_unk: 0
+
+      - q1_good_reply_oids:
+          - oid_11031_kravicka
+        q1_oid: oid_13011_kdo_chce_travicku
+        q1_unk: 0
+
+      - q1_good_reply_oids:
+          - oid_11033_louka
+        q1_oid: oid_13012_kdo_dal_travicku
+        q1_unk: 0
+
+
+#odtud je tabulka oidu
+#identifikator oidu ma tvar
+#oid_
+#xHHHH nebo DDDDD - cislo v hexadecimalnim nebo decimalnim tvaru
+#_TTTT - vysvetlujici text pro uzivatele
+#
+#tedy oid_x0064, oid_x0064_kviz1, oid_100, oid_100_kviz1 je to stejne z hlediska bnl souboru
+---
+oid_0:
+  mode_0:
+    - kniha_vitej1.mp3
+  mode_1:
+    - kniha_vitej1.mp3
+
+oid_100_kviz1:
+  mode_0:
+    - system_kviz_intro_standard.mp3
+
+oid_x0190_ting:
+  mode_0:
+    - system_ting.mp3
+  mode_1:
+    - system_ting.mp3
+oid_x0191_ting:
+  mode_0:
+    - system_ting.mp3
+  mode_1:
+    - system_ting.mp3
+oid_x0193_ting_vyborne:
+  mode_0:
+    - system_kviz_ting_vyborne.mp3
+  mode_1:
+    - system_kviz_ting_vyborne.mp3
+oid_x0194_ting_velmidobre:
+  mode_0:
+    - system_kviz_ting_velmidobre.mp3
+  mode_1:
+    - system_kviz_ting_velmidobre.mp3
+oid_x0195_ting:
+  mode_0:
+    - system_ting.mp3
+  mode_1:
+    - system_ting.mp3
+oid_x0196_ting_vyborne:
+  mode_0:
+    - system_kviz_ting_vyborne.mp3
+  mode_1:
+    - system_kviz_ting_vyborne.mp3
+oid_x0197_ting_velmidobre:
+  mode_0:
+    - system_kviz_ting_velmidobre.mp3
+  mode_1:
+    - system_kviz_ting_velmidobre.mp3
+oid_x0198_ting:
+  mode_0:
+    - system_ting.mp3
+  mode_1:
+    - system_ting.mp3
+oid_x0199_ting_vyborne:
+  mode_0:
+    - system_kviz_ting_vyborne.mp3
+  mode_1:
+    - system_kviz_ting_vyborne.mp3
+oid_x019A_ting_velmidobre:
+  mode_0:
+    - system_kviz_ting_velmidobre.mp3
+  mode_1:
+    - system_kviz_ting_velmidobre.mp3
+oid_x019B_buzz:
+  mode_0:
+    - system_buzz.mp3
+  mode_1:
+    - system_buzz.mp3
+oid_x019C_buzz:
+  mode_0:
+    - system_buzz.mp3
+  mode_1:
+    - system_buzz.mp3
+oid_x019D_buzz:
+  mode_0:
+    - system_buzz.mp3
+  mode_1:
+    - system_buzz.mp3
+oid_x019E_buzz_znovu:
+  mode_0:
+    - system_kviz_buzz_znovu.mp3
+  mode_1:
+    - system_kviz_buzz_znovu.mp3
+oid_x019F_buzz_jednou:
+  mode_0:
+    - system_kviz_buzz_jednou.mp3
+  mode_1:
+    - system_kviz_buzz_jednou.mp3
+oid_x01A0_buzz:
+  mode_0:
+    - system_buzz.mp3
+  mode_1:
+    - system_buzz.mp3
+oid_x01A1_buzz_znovu:
+  mode_0:
+    - system_kviz_buzz_znovu.mp3
+  mode_1:
+    - system_kviz_buzz_znovu.mp3
+oid_x01A2_buzz_jednou:
+  mode_0:
+    - system_kviz_buzz_jednou.mp3
+  mode_1:
+    - system_kviz_buzz_jednou.mp3
+oid_x01A3_buzz:
+  mode_0:
+    - system_buzz.mp3
+  mode_1:
+    - system_buzz.mp3
+oid_x01A6_chime:
+  mode_0:
+    - system_chime.mp3
+  mode_1:
+    - system_chime.mp3
+oid_x01A7_chime:
+  mode_0:
+    - system_chime.mp3
+  mode_1:
+    - system_chime.mp3
+oid_x01A8_chime:
+  mode_0:
+    - system_chime.mp3
+  mode_1:
+    - system_chime.mp3
+oid_x01A9_buzz:
+  mode_0:
+    - system_buzz.mp3
+  mode_1:
+    - system_buzz.mp3
+oid_x01AA_buzz:
+  mode_0:
+    - system_buzz.mp3
+  mode_1:
+    - system_buzz.mp3
+oid_x01AB_buzz:
+  mode_0:
+    - system_buzz.mp3
+  mode_1:
+    - system_buzz.mp3
+oid_x01AC_buzz:
+  mode_0:
+    - system_buzz.mp3
+  mode_1:
+    - system_buzz.mp3
+oid_x01AD_buzz:
+  mode_0:
+    - system_buzz.mp3
+  mode_1:
+    - system_buzz.mp3
+oid_x01AE_ting:
+  mode_0:
+    - system_ting.mp3
+  mode_1:
+    - system_ting.mp3
+oid_x01AF_ting:
+  mode_0:
+    - system_ting.mp3
+  mode_1:
+    - system_ting.mp3
+oid_x01B0_ting:
+  mode_0:
+    - system_ting.mp3
+  mode_1:
+    - system_ting.mp3
+oid_x01B5_buzz:
+  mode_0:
+    - system_buzz.mp3
+  mode_1:
+    - system_buzz.mp3
+oid_x01B6_buzz:
+  mode_0:
+    - system_buzz.mp3
+  mode_1:
+    - system_buzz.mp3
+oid_x01B7_buzz:
+  mode_0:
+    - system_buzz.mp3
+  mode_1:
+    - system_buzz.mp3
+oid_x01B8_kviz_vysledek_0:
+  mode_0:
+    - system_kviz_0_dobre.mp3
+  mode_1:
+    - system_kviz_0_dobre.mp3
+oid_x01B9_kviz_vysledek_1:
+  mode_0:
+    - system_kviz_1_dobre.mp3
+  mode_1:
+    - system_kviz_1_dobre.mp3
+oid_x01BA_kviz_vysledek_2:
+  mode_0:
+    - system_kviz_2_dobre.mp3
+  mode_1:
+    - system_kviz_2_dobre.mp3
+oid_x01BB_kviz_vysledek_3:
+  mode_0:
+    - system_kviz_3_dobre.mp3
+  mode_1:
+    - system_kviz_3_dobre.mp3
+oid_x01BC_kviz_vysledek_4:
+  mode_0:
+    - system_kviz_4_dobre.mp3
+  mode_1:
+    - system_kviz_4_dobre.mp3
+oid_x01BD_kviz_vysledek_5:
+  mode_0:
+    - system_kviz_5_dobre.mp3
+  mode_1:
+    - system_kviz_5_dobre.mp3
+
+
+#vocamcad jsou uz 'uzivatelske' oidy
+
+#krok1
+oid_11000_deleni:
+  mode_0:
+    - mod0_zrnicko_rozdelili.mp3
+  mode_1:
+    - mod0_zrnicko_rozdelili.mp3
+  mode_2:
+    - mod2_krok1.mp3
+
+oid_11001_slepicka:
+  mode_0:
+    - mod0_slepicka.mp3
+  mode_1:
+    - mod0_slepicka.mp3
+  mode_2:
+    - mod2_krok1.mp3
+
+oid_11002_kohoutek:
+  mode_0:
+    - mod0_kohoutek.mp3
+  mode_1:
+    - mod0_kohoutek.mp3
+  mode_2:
+    - mod2_krok1.mp3
+
+oid_11003_zrnicko:
+  mode_0:
+    - mod0_zrnicko.mp3
+  mode_1:
+    - mod0_zrnicko.mp3
+  mode_2:
+    - mod2_krok1.mp3
+
+
+#krok2
+oid_11004_nedeleni:
+  mode_0:
+    - mod0_nedelit_se.mp3
+  mode_1:
+    - mod0_nedelit_se.mp3
+  mode_2:
+    - mod2_krok2.mp3
+
+oid_11005_zrnicko:
+  mode_0:
+    - mod0_zrnicko.mp3
+  mode_1:
+    - mod0_zrnicko.mp3
+  mode_2:
+    - mod2_krok2.mp3
+
+oid_11006_kohoutek_lakomec:
+  mode_0:
+    - mod0_kohoutek_lakomy.mp3
+  mode_1:
+    - mod0_kohoutek_lakomy.mp3
+  mode_2:
+    - mod2_krok2.mp3
+
+oid_11007_slepicka:
+  mode_0:
+    - mod0_slepicka.mp3
+  mode_1:
+    - mod0_slepicka.mp3
+  mode_2:
+    - mod2_krok2.mp3
+
+
+#krok3
+oid_11010_kohoutek:
+  mode_0:
+    - mod0_kohoutek_dusi.mp3
+  mode_1:
+    - mod0_kohoutek_dusi.mp3
+  mode_2:
+    - mod2_krok3.mp3
+
+oid_11011_slepicka:
+  mode_0:
+    - mod0_slepicka_vydesena.mp3
+  mode_1:
+    - mod0_slepicka_vydesena.mp3
+  mode_2:
+    - mod2_krok3.mp3
+
+oid_11036_smrt:
+  mode_0:
+    - mod0_smrt.mp3
+  mode_1:
+    - mod0_smrt.mp3
+  mode_2:
+    - mod2_krok3.mp3
+
+#krok4
+oid_11012_voda:
+  mode_0:
+    - mod0_voda.mp3
+  mode_1:
+    - mod0_voda.mp3
+  mode_2:
+    - mod2_krok4.mp3
+
+oid_11013_satek:
+  mode_0:
+    - mod0_satek.mp3
+  mode_1:
+    - mod0_satek.mp3
+  mode_2:
+    - mod2_krok4.mp3
+
+oid_11014_slepicka:
+  mode_0:
+    - mod0_slepicka.mp3
+  mode_1:
+    - mod0_slepicka.mp3
+  mode_2:
+    - mod2_krok4.mp3
+
+oid_11015_studna:
+  mode_0:
+    - mod0_studna.mp3
+  mode_1:
+    - mod0_studna.mp3
+  mode_2:
+    - mod2_krok4.mp3
+
+#krok5
+oid_11016_satek:
+  mode_0:
+    - mod0_satek.mp3
+  mode_1:
+    - mod0_satek.mp3
+  mode_2:
+    - mod2_krok5.mp3
+
+oid_11017_bota:
+  mode_0:
+    - mod0_bota.mp3
+  mode_1:
+    - mod0_bota.mp3
+  mode_2:
+    - mod2_krok5.mp3
+
+oid_11018_slepicka:
+  mode_0:
+    - mod0_slepicka.mp3
+  mode_1:
+    - mod0_slepicka.mp3
+  mode_2:
+    - mod2_krok5.mp3
+
+oid_11019_svadlenka:
+  mode_0:
+    - mod0_svadlenka.mp3
+  mode_1:
+    - mod0_svadlenka.mp3
+  mode_2:
+    - mod2_krok5.mp3
+
+#krok6
+oid_11020_jelito:
+  mode_0:
+    - mod0_jelito.mp3
+  mode_1:
+    - mod0_jelito.mp3
+  mode_2:
+    - mod2_krok6.mp3
+
+oid_11021_bota:
+  mode_0:
+    - mod0_bota.mp3
+  mode_1:
+    - mod0_bota.mp3
+  mode_2:
+    - mod2_krok6.mp3
+
+oid_11022_svec:
+  mode_0:
+    - mod0_svec.mp3
+  mode_1:
+    - mod0_svec.mp3
+  mode_2:
+    - mod2_krok6.mp3
+
+oid_11023_slepicka:
+  mode_0:
+    - mod0_slepicka.mp3
+  mode_1:
+    - mod0_slepicka.mp3
+  mode_2:
+    - mod2_krok6.mp3
+
+#krok7
+oid_11024_jelito:
+  mode_0:
+    - mod0_jelito.mp3
+  mode_1:
+    - mod0_jelito.mp3
+  mode_2:
+    - mod2_krok7.mp3
+
+oid_11025_mleko:
+  mode_0:
+    - mod0_mleko.mp3
+  mode_1:
+    - mod0_mleko.mp3
+  mode_2:
+    - mod2_krok7.mp3
+
+oid_11026_slepicka:
+  mode_0:
+    - mod0_slepicka.mp3
+  mode_1:
+    - mod0_slepicka.mp3
+  mode_2:
+    - mod2_krok7.mp3
+
+oid_11027_prasatko:
+  mode_0:
+    - mod0_prasatko.mp3
+  mode_1:
+    - mod0_prasatko.mp3
+  mode_2:
+    - mod2_krok7.mp3
+
+
+#krok8
+oid_11028_mleko:
+  mode_0:
+    - mod0_mleko.mp3
+  mode_1:
+    - mod0_mleko.mp3
+  mode_2:
+    - mod2_krok8.mp3
+
+oid_11029_travicka:
+  mode_0:
+    - mod0_travicka.mp3
+  mode_1:
+    - mod0_travicka.mp3
+  mode_2:
+    - mod2_krok8.mp3
+
+oid_11030_slepicka:
+  mode_0:
+    - mod0_slepicka.mp3
+  mode_1:
+    - mod0_slepicka.mp3
+  mode_2:
+    - mod2_krok8.mp3
+
+oid_11031_kravicka:
+  mode_0:
+    - mod0_kravicka.mp3
+  mode_1:
+    - mod0_kravicka.mp3
+  mode_2:
+    - mod2_krok8.mp3
+
+
+#krok9
+oid_11032_mrak:
+  mode_0:
+    - mod0_mrak.mp3
+  mode_1:
+    - mod0_mrak.mp3
+  mode_2:
+    - mod2_krok9.mp3
+
+oid_11033_louka:
+  mode_0:
+    - mod0_louka.mp3
+  mode_1:
+    - mod0_louka.mp3
+  mode_2:
+    - mod2_krok9.mp3
+
+oid_11034_slepicka:
+  mode_0:
+    - mod0_slepicka.mp3
+  mode_1:
+    - mod0_slepicka.mp3
+  mode_2:
+    - mod2_krok9.mp3
+
+#krok10
+oid_11035_finale:
+  mode_0:
+    - mod0_finale.mp3
+  mode_1:
+    - mod0_finale.mp3
+  mode_2:
+    - mod2_krok10.mp3
+
+#vsechno
+oid_12000_vsechno:
+  mode_0:
+    - mod_cela_pohadka.mp3
+    - mod2_krok1.mp3
+    - mod2_krok2.mp3
+    - mod2_krok3.mp3
+    - mod2_krok4.mp3
+    - mod2_krok5.mp3
+    - mod2_krok6.mp3
+    - mod2_krok7.mp3
+    - mod2_krok8.mp3
+    - mod2_krok9.mp3
+    - mod2_krok10.mp3
+  mode_1:
+    - mod_cela_pohadka.mp3
+    - mod2_krok1.mp3
+    - mod2_krok2.mp3
+    - mod2_krok3.mp3
+    - mod2_krok4.mp3
+    - mod2_krok5.mp3
+    - mod2_krok6.mp3
+    - mod2_krok7.mp3
+    - mod2_krok8.mp3
+    - mod2_krok9.mp3
+    - mod2_krok10.mp3
+  mode_2:
+    - mod_cela_pohadka.mp3
+    - mod2_krok1.mp3
+    - mod2_krok2.mp3
+    - mod2_krok3.mp3
+    - mod2_krok4.mp3
+    - mod2_krok5.mp3
+    - mod2_krok6.mp3
+    - mod2_krok7.mp3
+    - mod2_krok8.mp3
+    - mod2_krok9.mp3
+    - mod2_krok10.mp3
+
+
+#odsud jsou otazky kvizu
+oid_13000_kdo_se_rozdeli:
+  mode_0:
+    - kviz_ot_kdo_se_rozdeli.mp3
+  mode_1:
+    - kviz_ot_kdo_se_rozdeli.mp3
+  mode_2:
+    - kviz_ot_kdo_se_rozdeli.mp3
+
+oid_13001_kdo_je_lakomec:
+  mode_0:
+    - kviz_ot_kdo_je_lakomec.mp3
+  mode_1:
+    - kviz_ot_kdo_je_lakomec.mp3
+  mode_2:
+    - kviz_ot_kdo_je_lakomec.mp3
+
+oid_13002_kdo_chce_vodu:
+  mode_0:
+    - kviz_ot_kdo_chce_vodu.mp3
+  mode_1:
+    - kviz_ot_kdo_chce_vodu.mp3
+  mode_2:
+    - kviz_ot_kdo_chce_vodu.mp3
+
+oid_13003_kdo_chce_satek:
+  mode_0:
+    - kviz_ot_kdo_chce_satek.mp3
+  mode_1:
+    - kviz_ot_kdo_chce_satek.mp3
+  mode_2:
+    - kviz_ot_kdo_chce_satek.mp3
+
+oid_13004_kdo_dal_satek:
+  mode_0:
+    - kviz_ot_kdo_dal_satek.mp3
+  mode_1:
+    - kviz_ot_kdo_dal_satek.mp3
+  mode_2:
+    - kviz_ot_kdo_dal_satek.mp3
+
+oid_13005_kdo_chce_botu:
+  mode_0:
+    - kviz_ot_kdo_chce_botu.mp3
+  mode_1:
+    - kviz_ot_kdo_chce_botu.mp3
+  mode_2:
+    - kviz_ot_kdo_chce_botu.mp3
+
+oid_13006_kdo_dal_botu:
+  mode_0:
+    - kviz_ot_kdo_dal_botu.mp3
+  mode_1:
+    - kviz_ot_kdo_dal_botu.mp3
+  mode_2:
+    - kviz_ot_kdo_dal_botu.mp3
+
+oid_13007_kdo_chce_jelito:
+  mode_0:
+    - kviz_ot_kdo_chce_jelito.mp3
+  mode_1:
+    - kviz_ot_kdo_chce_jelito.mp3
+  mode_2:
+    - kviz_ot_kdo_chce_jelito.mp3
+
+oid_13008_kdo_dal_jelito:
+  mode_0:
+    - kviz_ot_kdo_dal_jelito.mp3
+  mode_1:
+    - kviz_ot_kdo_dal_jelito.mp3
+  mode_2:
+    - kviz_ot_kdo_dal_jelito.mp3
+
+oid_13009_kdo_chce_mleko:
+  mode_0:
+    - kviz_ot_kdo_chce_mleko.mp3
+  mode_1:
+    - kviz_ot_kdo_chce_mleko.mp3
+  mode_2:
+    - kviz_ot_kdo_chce_mleko.mp3
+
+oid_13010_kdo_dal_mleko:
+  mode_0:
+    - kviz_ot_kdo_dal_mleko.mp3
+  mode_1:
+    - kviz_ot_kdo_dal_mleko.mp3
+  mode_2:
+    - kviz_ot_kdo_dal_mleko.mp3
+
+oid_13011_kdo_chce_travicku:
+  mode_0:
+    - kviz_ot_kdo_chce_travicku.mp3
+  mode_1:
+    - kviz_ot_kdo_chce_travicku.mp3
+  mode_2:
+    - kviz_ot_kdo_chce_travicku.mp3
+
+oid_13012_kdo_dal_travicku:
+  mode_0:
+    - kviz_ot_kdo_dal_travicku.mp3
+  mode_1:
+    - kviz_ot_kdo_dal_travicku.mp3
+  mode_2:
+    - kviz_ot_kdo_dal_travicku.mp3
+
