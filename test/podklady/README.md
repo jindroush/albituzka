@@ -1,5 +1,5 @@
 # Podklady pro vytvoření BNL
-bnl.yaml je vstupní soubor pro bnl_create.pl
+bnl.yaml je vstupní soubor pro bnl_creator.pl
 
 texty_k_namluveni.zip jsou soubory, které jsou vstupem pro MS Speech Engine
 
