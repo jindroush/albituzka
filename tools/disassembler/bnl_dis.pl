@@ -1,5 +1,7 @@
-﻿# albi bnl file decryptor, works also for some arabic downloads
+﻿# albi bnl file decryptor/disassembler, works also for some arabic downloads
+# written by jindroush, published under MPL license
 # part of https://github.com/jindroush/albituzka
+#
 # bnl_dis.pl input_file [switches]
 # -extract - extracts mp3 files to current directory
 # -bitrate - computes mp3 files bitrate
@@ -18,28 +20,26 @@
 # 20.02.2022 jindroush	changed oid converter to OID2.0
 
 use strict;
-use MP3::Info;
 use YAML;
+use MP3::Info;
 
-my %BNL;
-
-my $extract_mp3 = 0;
-my $extract_mp3_br = 0;
-my $save = 1;
 my @oid_tbl_int2raw;
 &oid_converter_init();
 
-#dbg
-#printf( "%08X", &rawoid2oid( 0x531 ) );
+#global pars
+my $infile = "in.bnl";
+my $extract_mp3 = 0;
+my $extract_mp3_br = 0;
+my $save = 1;
 
+#globals
+my %BNL;
 my $lo_rbuf = 1<<32 - 1;
 my $hi_rbuf = 0;
-
 my $buf;
 my $rbuf;
 
-my $in = "in.bnl";
-
+#cmdline processing
 while( @ARGV )
 {
 	my $s = shift @ARGV;
@@ -63,23 +63,250 @@ while( @ARGV )
 	}
 	else
 	{
-		$in = $s;
+		$infile = $s;
 	}
 }
 
-open IN, $in or die;
+open IN, $infile or die;
 binmode IN;
-my $l = -s $in;
-sysread( IN, $rbuf, $l );
+my $flen = -s $infile;
+sysread( IN, $rbuf, $flen );
 sysseek( IN, 0, 0 );
 
-printf "file: $in\n";
-printf "len: %08X\n", $l;
+printf "file: $infile\n";
+printf "len: %08X\n", $flen;
 
-sysseek( IN, 3, 0 );
-sysread( IN, $buf, 1 );
-&mark_rbuf( 1 );
-my $k3 = unpack( "C*", $buf );
+print "header:\n";
+sysseek( IN, 0, 0 );
+sysread( IN, $buf, 80 * 4 );
+&mark_rbuf( 80 * 4 );
+my @dws = unpack( "V*", $buf );
+my $dkey = shift @dws;
+printf "dkey: %08X\n", $dkey;
+$BNL{header}{encryption}{ header_key } = sprintf( "0x%08X", $dkey );
+my $oid_table_ptr = &get_ptr_value( shift @dws, $dkey );
+printf "end of header/oid table ptr: %08X\n", $oid_table_ptr;
+die if( $oid_table_ptr != 0x200 );
+
+#table of pointers of media files
+my $mtbl_ptr = &get_ptr_value( shift @dws, $dkey );
+printf "media table: %08X\n", $mtbl_ptr;
+
+my $ptr_start_button_1st_read_media = &get_ptr_value( shift @dws, $dkey );
+my $ptr_start_button_2nd_read_media = &get_ptr_value( shift @dws, $dkey );
+
+my $unk_tbl_ptr5 = &get_ptr_value( shift @dws, $dkey );
+my ( $oid_min, $oid_max, $mediafiles_cnt, $w3 ) = unpack( "v*", pack( "V*", (shift @dws, shift @dws ) ) );
+printf "min file oid: %04X\n", $oid_min; #this is min file oid, we've seen always zero here
+printf "max file oid: %04X\n", $oid_max;
+printf "media files cnt: %d\n", $mediafiles_cnt;
+printf "w07b: %04X\n", $w3;
+my $unk_tbl_ptr8 = &get_ptr_value( shift @dws, $dkey );
+my $ptr_book_mode_read_media = &get_ptr_value( shift @dws, $dkey );
+
+printf "dw0A: %08X\n", &get_ptr_value( shift @dws, $dkey );
+my $book_modes = shift @dws;
+printf "book modes: %08X\n", $book_modes;
+printf "dw0C: %08X\n", &get_ptr_value( shift @dws, $dkey );
+printf "dw0D: %08X\n", &get_ptr_value( shift @dws, $dkey );
+printf "dw0E: %08X\n", &get_ptr_value( shift @dws, $dkey );
+printf "dw0F: %08X\n", &get_ptr_value( shift @dws, $dkey );
+printf "dw10: %08X\n", &get_ptr_value( shift @dws, $dkey );
+
+printf "start_button_1st_read: %08X (dw3)\n", $ptr_start_button_1st_read_media;
+&allmedia_tbl( $ptr_start_button_1st_read_media, $BNL{header}, "start_button_1st_read" );
+printf "start_button_2nd_read: %08X (dw4)\n", $ptr_start_button_2nd_read_media;
+&allmedia_tbl( $ptr_start_button_2nd_read_media, $BNL{header}, "start_button_2nd_read" ) if( $ptr_start_button_2nd_read_media != 0xFFFFFFFF );
+printf "dw05: %08X\n", $unk_tbl_ptr5;
+&allmedia_tbl( $unk_tbl_ptr5, $BNL{header}, "unk_tbl_ptr5" ) if( $unk_tbl_ptr5 != 0xFFFFFFFF );
+printf "dw08: %08X\n", $unk_tbl_ptr8;
+&allmedia_tbl( $unk_tbl_ptr8, $BNL{header}, "unk_tbl_ptr8" ) if( $unk_tbl_ptr8 != 0xFFFFFFFF );
+printf "book_mode_read: %08X (dw9)\n", $ptr_book_mode_read_media;
+&allmedia_tbl( $ptr_book_mode_read_media, $BNL{header}, "book_mode_read" );
+
+
+my $ptr_quiz_table = &get_ptr_value( shift @dws, $dkey );
+#points to list of file pointers
+$BNL{quiz} = {};
+$BNL{quiz}{quizes} = [];
+printf "quiz_table: %08X\n", $ptr_quiz_table;
+&quiz_tbl( $ptr_quiz_table );
+
+#points to table of w-len, and w-numbers
+my $ptr_quiz_pos1 = &get_ptr_value( shift @dws, $dkey );
+printf "quiz_pos1: %08X\n", $ptr_quiz_pos1;
+&oid_tbl( $ptr_quiz_pos1, $BNL{quiz}, "quiz_pos1" );
+
+#points to table of w-len, and w-numbers
+my $ptr_quiz_pos2 = &get_ptr_value( shift @dws, $dkey );
+printf "quiz_pos2: %08X\n", $ptr_quiz_pos2;
+&oid_tbl( $ptr_quiz_pos2, $BNL{quiz}, "quiz_pos2" );
+
+#points to table of w-len, and w-numbers
+my $ptr_quiz_neg1 = &get_ptr_value( shift @dws, $dkey );
+printf "quiz_neg1: %08X\n", $ptr_quiz_neg1;
+&oid_tbl( $ptr_quiz_neg1, $BNL{quiz}, "quiz_neg1" );
+
+#points to table of w-len, and w-numbers
+my $ptr_quiz_neg2 = &get_ptr_value( shift @dws, $dkey );
+printf "quiz_neg2: %08X\n", $ptr_quiz_neg2;
+&oid_tbl( $ptr_quiz_neg2, $BNL{quiz}, "quiz_neg2" );
+
+#points to table of w-len, and w-numbers
+my $unk_tbl_ptr_16 = &get_ptr_value( shift @dws, $dkey );
+printf "unk_tbl_ptr_16: %08X\n", $unk_tbl_ptr_16;
+&oid_tbl( $unk_tbl_ptr_16, $BNL{header}, "unk_tbl_ptr_16" );
+
+my $book_id = shift @dws;
+printf "book_id: %08X [%04X]\n", $book_id, &oid2rawoid( $book_id ) ;
+$BNL{header}{ book_id } = sprintf( "0x%04X", $book_id );
+
+
+my $unk_tbl_ptr_18 = &get_ptr_value( shift @dws, $dkey );
+printf "dw18: %08X\n", $unk_tbl_ptr_18;
+&allmedia_tbl( $unk_tbl_ptr_18, $BNL{header}, "unk_tbl_ptr_18" ) if( $unk_tbl_ptr_18 != 0xFFFFFFFF );
+
+my $unk_tbl_ptr_19 = &get_ptr_value( shift @dws, $dkey );
+printf "dw19: %08X\n", $unk_tbl_ptr_19;
+&allmedia_tbl( $unk_tbl_ptr_19, $BNL{header}, "unk_tbl_ptr_19" ) if( $unk_tbl_ptr_19 != 0xFFFFFFFF );
+
+my $unk_tbl_ptr_1a = &get_ptr_value( shift @dws, $dkey );
+printf "dw1A: %08X\n", $unk_tbl_ptr_1a;
+&allmedia_tbl( $unk_tbl_ptr_1a, $BNL{header}, "unk_tbl_ptr_1a" ) if( $unk_tbl_ptr_1a != 0xFFFFFFFF );
+
+my $unk_tbl_ptr_1b = &get_ptr_value( shift @dws, $dkey );
+printf "dw1B: %08X\n", $unk_tbl_ptr_1b;
+&allmedia_tbl( $unk_tbl_ptr_1b, $BNL{header}, "unk_tbl_ptr_1b" ) if( $unk_tbl_ptr_1b != 0xFFFFFFFF );
+
+my $unk_tbl_ptr_1c = &get_ptr_value( shift @dws, $dkey );
+printf "dw1C: %08X\n", $unk_tbl_ptr_1c;
+&allmedia_tbl( $unk_tbl_ptr_1c, $BNL{header}, "unk_tbl_ptr_1c" ) if( $unk_tbl_ptr_1c != 0xFFFFFFFF );
+
+my $unk_tbl_ptr_1d = &get_ptr_value( shift @dws, $dkey );
+printf "dw1D: %08X\n", $unk_tbl_ptr_1d;
+&allmedia_tbl( $unk_tbl_ptr_1d, $BNL{header}, "unk_tbl_ptr_1d" ) if( $unk_tbl_ptr_1d != 0xFFFFFFFF );
+
+my $unk_tbl_ptr_1e = &get_ptr_value( shift @dws, $dkey );
+printf "dw1E: %08X\n", $unk_tbl_ptr_1e;
+&allmedia_tbl( $unk_tbl_ptr_1e, $BNL{header}, "unk_tbl_ptr_1e" ) if( $unk_tbl_ptr_1e != 0xFFFFFFFF );
+
+my $unk_tbl_ptr_1f = &get_ptr_value( shift @dws, $dkey );
+printf "dw1F: %08X\n", $unk_tbl_ptr_1f;
+&allmedia_tbl( $unk_tbl_ptr_1f, $BNL{header}, "unk_tbl_ptr_1f" ) if( $unk_tbl_ptr_1f != 0xFFFFFFFF );
+
+my $unk_tbl_ptr_20 = &get_ptr_value( shift @dws, $dkey );
+printf "dw20: %08X\n", $unk_tbl_ptr_20;
+&allmedia_tbl( $unk_tbl_ptr_20, $BNL{header}, "unk_tbl_ptr_20" ) if( $unk_tbl_ptr_20 != 0xFFFFFFFF );
+
+my $unk_tbl_ptr_21 = &get_ptr_value( shift @dws, $dkey );
+printf "dw21: %08X\n", $unk_tbl_ptr_21;
+&allmedia_tbl( $unk_tbl_ptr_21, $BNL{header}, "unk_tbl_ptr_21" ) if( $unk_tbl_ptr_21 != 0xFFFFFFFF );
+
+my $unk_tbl_ptr_22 = &get_ptr_value( shift @dws, $dkey );
+printf "dw22: %08X\n", $unk_tbl_ptr_22;
+&allmedia_tbl( $unk_tbl_ptr_22, $BNL{header}, "unk_tbl_ptr_22" ) if( $unk_tbl_ptr_22 != 0xFFFFFFFF );
+
+my $unk_tbl_ptr_23 = &get_ptr_value( shift @dws, $dkey );
+printf "dw23: %08X\n", $unk_tbl_ptr_23;
+&allmedia_tbl( $unk_tbl_ptr_23, $BNL{header}, "unk_tbl_ptr_23" ) if( $unk_tbl_ptr_23 != 0xFFFFFFFF );
+
+my $unk_tbl_ptr_24 = &get_ptr_value( shift @dws, $dkey );
+printf "dw24: %08X\n", $unk_tbl_ptr_24;
+&allmedia_tbl( $unk_tbl_ptr_24, $BNL{header}, "unk_tbl_ptr_24" ) if( $unk_tbl_ptr_24 != 0xFFFFFFFF );
+
+my $unk_tbl_ptr_25 = &get_ptr_value( shift @dws, $dkey );
+printf "dw25: %08X\n", $unk_tbl_ptr_25;
+&allmedia_tbl( $unk_tbl_ptr_25, $BNL{header}, "unk_tbl_ptr_25" ) if( $unk_tbl_ptr_25 != 0xFFFFFFFF );
+
+my $unk_tbl_ptr_26 = &get_ptr_value( shift @dws, $dkey );
+printf "dw26: %08X\n", $unk_tbl_ptr_26;
+&allmedia_tbl( $unk_tbl_ptr_26, $BNL{header}, "unk_tbl_ptr_26" ) if( $unk_tbl_ptr_26 != 0xFFFFFFFF );
+
+
+my $unk_tbl_ptr_27 = &get_ptr_value( shift @dws, $dkey );
+printf "unk_tbl_ptr_27: %08X\n", $unk_tbl_ptr_27;
+&oid_tbl( $unk_tbl_ptr_27, $BNL{header}, "unk_tbl_ptr_27" );
+my $unk_tbl_ptr_28 = &get_ptr_value( shift @dws, $dkey );
+printf "unk_tbl_ptr_28: %08X\n", $unk_tbl_ptr_28;
+&oid_tbl( $unk_tbl_ptr_28, $BNL{header}, "unk_tbl_ptr_28" );
+my $unk_tbl_ptr_29 = &get_ptr_value( shift @dws, $dkey );
+printf "unk_tbl_ptr_29: %08X\n", $unk_tbl_ptr_29;
+&oid_tbl( $unk_tbl_ptr_29, $BNL{header}, "unk_tbl_ptr_29" );
+my $ptr_quiz_results = &get_ptr_value( shift @dws, $dkey );
+printf "quiz_results: %08X\n", $ptr_quiz_results;
+&oid_tbl( $ptr_quiz_results, $BNL{quiz}, "quiz_results" );
+
+printf "dw2B: %08X\n", &get_ptr_value( shift @dws, $dkey );
+printf "dw2C: %08X\n", &get_ptr_value( shift @dws, $dkey );
+printf "dw2D: %08X\n", &get_ptr_value( shift @dws, $dkey );
+printf "dw2E: %08X\n", &get_ptr_value( shift @dws, $dkey );
+printf "dw2F: %08X\n", &get_ptr_value( shift @dws, $dkey );
+printf "dw30: %08X\n", &get_ptr_value( shift @dws, $dkey );
+printf "dw31: %08X\n", &get_ptr_value( shift @dws, $dkey );
+printf "dw32: %08X\n", &get_ptr_value( shift @dws, $dkey );
+
+my $unk_tbl_ptr_33 = &get_ptr_value( shift @dws, $dkey );
+printf "dw33: %08X\n", $unk_tbl_ptr_33;
+&allmedia_tbl( $unk_tbl_ptr_33, $BNL{header}, "unk_tbl_ptr_33" ) if( $unk_tbl_ptr_33 != 0xFFFFFFFF );
+
+my $unk_tbl_ptr_34 = &get_ptr_value( shift @dws, $dkey );
+printf "dw34: %08X\n", $unk_tbl_ptr_34;
+&allmedia_tbl( $unk_tbl_ptr_34, $BNL{header}, "unk_tbl_ptr_34" ) if( $unk_tbl_ptr_34 != 0xFFFFFFFF );
+
+my $unk_tbl_ptr_35 = &get_ptr_value( shift @dws, $dkey );
+printf "dw35: %08X\n", $unk_tbl_ptr_35;
+&allmedia_tbl( $unk_tbl_ptr_35, $BNL{header}, "unk_tbl_ptr_35" ) if( $unk_tbl_ptr_35 != 0xFFFFFFFF );
+
+my $unk_tbl_ptr_36 = &get_ptr_value( shift @dws, $dkey );
+printf "dw36: %08X\n", $unk_tbl_ptr_36;
+&allmedia_tbl( $unk_tbl_ptr_36, $BNL{header}, "unk_tbl_ptr_36" ) if( $unk_tbl_ptr_36 != 0xFFFFFFFF );
+
+my $unk_tbl_ptr_37 = &get_ptr_value( shift @dws, $dkey );
+printf "dw37: %08X\n", $unk_tbl_ptr_37;
+&allmedia_tbl( $unk_tbl_ptr_37, $BNL{header}, "unk_tbl_ptr_37" ) if( $unk_tbl_ptr_37 != 0xFFFFFFFF );
+
+my $unk_tbl_ptr_38 = &get_ptr_value( shift @dws, $dkey );
+printf "dw38: %08X\n", $unk_tbl_ptr_38;
+&allmedia_tbl( $unk_tbl_ptr_38, $BNL{header}, "unk_tbl_ptr_38" ) if( $unk_tbl_ptr_38 != 0xFFFFFFFF );
+
+my $unk_tbl_ptr_39 = &get_ptr_value( shift @dws, $dkey );
+printf "dw39: %08X\n", $unk_tbl_ptr_39;
+&allmedia_tbl( $unk_tbl_ptr_39, $BNL{header}, "unk_tbl_ptr_39" ) if( $unk_tbl_ptr_39 != 0xFFFFFFFF );
+
+my $unk_tbl_ptr_3a = &get_ptr_value( shift @dws, $dkey );
+printf "dw3A: %08X\n", $unk_tbl_ptr_3a;
+&allmedia_tbl( $unk_tbl_ptr_3a, $BNL{header}, "unk_tbl_ptr_3A" ) if( $unk_tbl_ptr_3a != 0xFFFFFFFF );
+
+my $unk_tbl_ptr_3b = &get_ptr_value( shift @dws, $dkey );
+printf "dw3B: %08X\n", $unk_tbl_ptr_3b;
+&allmedia_tbl( $unk_tbl_ptr_3b, $BNL{header}, "unk_tbl_ptr_3B" ) if( $unk_tbl_ptr_3b != 0xFFFFFFFF );
+
+printf "dw3C: %08X\n", &get_ptr_value( shift @dws, $dkey );
+printf "dw3D: %08X\n", &get_ptr_value( shift @dws, $dkey );
+printf "dw3E: %08X\n", &get_ptr_value( shift @dws, $dkey );
+printf "dw3F: %08X\n", &get_ptr_value( shift @dws, $dkey );
+my $unk_tbl_ptr_40 = &get_ptr_value( shift @dws, $dkey );
+printf "dw40: %08X\n", $unk_tbl_ptr_40;
+&allmedia_tbl( $unk_tbl_ptr_40, $BNL{header}, "unk_tbl_ptr_40" ) if( $unk_tbl_ptr_40 != 0xFFFFFFFF );
+printf "dw41: %08X\n", &get_ptr_value( shift @dws, $dkey );
+printf "dw42: %08X\n", &get_ptr_value( shift @dws, $dkey );
+printf "dw43: %08X\n", &get_ptr_value( shift @dws, $dkey );
+printf "dw44: %08X\n", &get_ptr_value( shift @dws, $dkey );
+printf "dw45: %08X\n", &get_ptr_value( shift @dws, $dkey );
+printf "dw46: %08X\n", &get_ptr_value( shift @dws, $dkey );
+printf "dw47: %08X\n", &get_ptr_value( shift @dws, $dkey );
+printf "dw48: %08X\n", &get_ptr_value( shift @dws, $dkey );
+printf "dw49: %08X\n", &get_ptr_value( shift @dws, $dkey );
+printf "dw4A: %08X\n", &get_ptr_value( shift @dws, $dkey );
+printf "dw4B: %08X\n", &get_ptr_value( shift @dws, $dkey );
+printf "dw4C: %08X\n", &get_ptr_value( shift @dws, $dkey );
+printf "dw4D: %08X\n", &get_ptr_value( shift @dws, $dkey );
+printf "dw4E: %08X\n", &get_ptr_value( shift @dws, $dkey );
+printf "dw4F: %08X\n", &get_ptr_value( shift @dws, $dkey );
+
+
+#header mostly done, now do the key magic
+my $k3 = ( $dkey >> 24 ) & 0xFF;
 
 sysseek( IN, 0x140, 0 );
 sysread( IN, $buf, 20 );
@@ -90,11 +317,11 @@ my $dw = shift @pre_key;
 #we know for sure that first dword is needed on real hardware for decryption
 #since we don't understand how the key derivation really works
 #we'll need to use this as an hardcoded value
-printf( "K3: %02X\n", $k3 );
+printf( "key modifier: %02X\n", $k3 );
 $BNL{header}{encryption}{ prekey_dw } = sprintf( "0x%08X", $dw );
 $BNL{header}{encryption}{ prekey } = [ map( { sprintf( "0x%02X", $_ ) } @pre_key )];
 
-printf( "DW: %08X\n", $dw );
+printf( "Pre-key_dw: %08X\n", $dw );
 printf( "Pre-key: " );
 foreach ( @pre_key )
 {
@@ -108,238 +335,7 @@ foreach ( @pre_key )
 	printf( "%02X ", $_ );
 }
 print "\n";
-
-
-print "header:\n";
-sysseek( IN, 0, 0 );
-sysread( IN, $buf, 80 * 4 );
-&mark_rbuf( 80 * 4 );
-my @dws = unpack( "V*", $buf );
-my $dkey = shift @dws;
-printf "dkey: %08X\n", $dkey;
-$BNL{header}{encryption}{ header_key } = sprintf( "0x%08X", $dkey );
-my $start_of_script = &decipher( shift @dws, $dkey );
-printf "end of header/start of script table?: %08X\n", $start_of_script;
-die if( $start_of_script != 0x200 );
-
-#table of pointers of media files
-my $mtbl_ptr = &decipher( shift @dws, $dkey );
-printf "media table: %08X\n", $mtbl_ptr;
 &media_tbl( $mtbl_ptr );
-
-my $unk_tbl_ptr3 = &decipher( shift @dws, $dkey );
-my $unk_tbl_ptr4 = &decipher( shift @dws, $dkey );
-
-my $unk_tbl_ptr5 = &decipher( shift @dws, $dkey );
-my ( $oid_min, $oid_max, $mediafiles_cnt, $w3 ) = unpack( "v*", pack( "V*", (shift @dws, shift @dws ) ) );
-printf "min file oid: %04X\n", $oid_min; #this is min file oid, we've seen always zero here
-printf "max file oid: %04X\n", $oid_max;
-printf "media files cnt: %d\n", $mediafiles_cnt;
-printf "w07b: %04X\n", $w3;
-my $unk_tbl_ptr8 = &decipher( shift @dws, $dkey );
-my $unk_tbl_ptr9 = &decipher( shift @dws, $dkey );
-
-printf "dw0A: %08X\n", &decipher( shift @dws, $dkey );
-my $book_modes = shift @dws;
-printf "book modes: %08X\n", $book_modes;
-printf "dw0C: %08X\n", &decipher( shift @dws, $dkey );
-printf "dw0D: %08X\n", &decipher( shift @dws, $dkey );
-printf "dw0E: %08X\n", &decipher( shift @dws, $dkey );
-printf "dw0F: %08X\n", &decipher( shift @dws, $dkey );
-printf "dw10: %08X\n", &decipher( shift @dws, $dkey );
-
-printf "start_button_1st_read: %08X (dw3)\n", $unk_tbl_ptr3;
-&allmedia_tbl( $unk_tbl_ptr3, $BNL{header}, "start_button_1st_read" );
-printf "start_button_2nd_read: %08X (dw4)\n", $unk_tbl_ptr4;
-&allmedia_tbl( $unk_tbl_ptr4, $BNL{header}, "start_button_2nd_read" ) if( $unk_tbl_ptr4 != 0xFFFFFFFF );
-printf "dw05: %08X\n", $unk_tbl_ptr5;
-&allmedia_tbl( $unk_tbl_ptr5, $BNL{header}, "unk_tbl_ptr5" ) if( $unk_tbl_ptr5 != 0xFFFFFFFF );
-printf "dw08: %08X\n", $unk_tbl_ptr8;
-&allmedia_tbl( $unk_tbl_ptr8, $BNL{header}, "unk_tbl_ptr8" ) if( $unk_tbl_ptr8 != 0xFFFFFFFF );
-printf "book_mode_read: %08X (dw9)\n", $unk_tbl_ptr9;
-&allmedia_tbl( $unk_tbl_ptr9, $BNL{header}, "book_mode_read" );
-
-
-my $unk_tbl_ptr_11 = &decipher( shift @dws, $dkey );
-#points to list of file pointers
-$BNL{quiz} = {};
-$BNL{quiz}{quizes} = [];
-printf "quiz_table: %08X\n", $unk_tbl_ptr_11;
-&quiz_tbl( $unk_tbl_ptr_11 );
-
-#points to table of w-len, and w-numbers
-my $unk_tbl_ptr_12 = &decipher( shift @dws, $dkey );
-printf "quiz_pos1: %08X\n", $unk_tbl_ptr_12;
-&oid_tbl( $unk_tbl_ptr_12, $BNL{quiz}, "quiz_pos1" );
-
-#points to table of w-len, and w-numbers
-my $unk_tbl_ptr_13 = &decipher( shift @dws, $dkey );
-printf "quiz_pos2: %08X\n", $unk_tbl_ptr_13;
-&oid_tbl( $unk_tbl_ptr_13, $BNL{quiz}, "quiz_pos2" );
-
-#points to table of w-len, and w-numbers
-my $unk_tbl_ptr_14 = &decipher( shift @dws, $dkey );
-printf "quiz_neg1: %08X\n", $unk_tbl_ptr_14;
-&oid_tbl( $unk_tbl_ptr_14, $BNL{quiz}, "quiz_neg1" );
-
-#points to table of w-len, and w-numbers
-my $unk_tbl_ptr_15 = &decipher( shift @dws, $dkey );
-printf "quiz_neg2: %08X\n", $unk_tbl_ptr_15;
-&oid_tbl( $unk_tbl_ptr_15, $BNL{quiz}, "quiz_neg2" );
-
-#points to table of w-len, and w-numbers
-my $unk_tbl_ptr_16 = &decipher( shift @dws, $dkey );
-printf "unk_tbl_ptr_16: %08X\n", $unk_tbl_ptr_16;
-&oid_tbl( $unk_tbl_ptr_16, $BNL{header}, "unk_tbl_ptr_16" );
-
-my $book_id = shift @dws;
-printf "book_id: %08X [%04X]\n", $book_id, &oid2rawoid( $book_id ) ;
-$BNL{header}{ book_id } = sprintf( "0x%04X", $book_id );
-
-
-my $unk_tbl_ptr_18 = &decipher( shift @dws, $dkey );
-printf "dw18: %08X\n", $unk_tbl_ptr_18;
-&allmedia_tbl( $unk_tbl_ptr_18, $BNL{header}, "unk_tbl_ptr_18" ) if( $unk_tbl_ptr_18 != 0xFFFFFFFF );
-
-my $unk_tbl_ptr_19 = &decipher( shift @dws, $dkey );
-printf "dw19: %08X\n", $unk_tbl_ptr_19;
-&allmedia_tbl( $unk_tbl_ptr_19, $BNL{header}, "unk_tbl_ptr_19" ) if( $unk_tbl_ptr_19 != 0xFFFFFFFF );
-
-my $unk_tbl_ptr_1a = &decipher( shift @dws, $dkey );
-printf "dw1A: %08X\n", $unk_tbl_ptr_1a;
-&allmedia_tbl( $unk_tbl_ptr_1a, $BNL{header}, "unk_tbl_ptr_1a" ) if( $unk_tbl_ptr_1a != 0xFFFFFFFF );
-
-my $unk_tbl_ptr_1b = &decipher( shift @dws, $dkey );
-printf "dw1B: %08X\n", $unk_tbl_ptr_1b;
-&allmedia_tbl( $unk_tbl_ptr_1b, $BNL{header}, "unk_tbl_ptr_1b" ) if( $unk_tbl_ptr_1b != 0xFFFFFFFF );
-
-my $unk_tbl_ptr_1c = &decipher( shift @dws, $dkey );
-printf "dw1C: %08X\n", $unk_tbl_ptr_1c;
-&allmedia_tbl( $unk_tbl_ptr_1c, $BNL{header}, "unk_tbl_ptr_1c" ) if( $unk_tbl_ptr_1c != 0xFFFFFFFF );
-
-my $unk_tbl_ptr_1d = &decipher( shift @dws, $dkey );
-printf "dw1D: %08X\n", $unk_tbl_ptr_1d;
-&allmedia_tbl( $unk_tbl_ptr_1d, $BNL{header}, "unk_tbl_ptr_1d" ) if( $unk_tbl_ptr_1d != 0xFFFFFFFF );
-
-my $unk_tbl_ptr_1e = &decipher( shift @dws, $dkey );
-printf "dw1E: %08X\n", $unk_tbl_ptr_1e;
-&allmedia_tbl( $unk_tbl_ptr_1e, $BNL{header}, "unk_tbl_ptr_1e" ) if( $unk_tbl_ptr_1e != 0xFFFFFFFF );
-
-my $unk_tbl_ptr_1f = &decipher( shift @dws, $dkey );
-printf "dw1F: %08X\n", $unk_tbl_ptr_1f;
-&allmedia_tbl( $unk_tbl_ptr_1f, $BNL{header}, "unk_tbl_ptr_1f" ) if( $unk_tbl_ptr_1f != 0xFFFFFFFF );
-
-my $unk_tbl_ptr_20 = &decipher( shift @dws, $dkey );
-printf "dw20: %08X\n", $unk_tbl_ptr_20;
-&allmedia_tbl( $unk_tbl_ptr_20, $BNL{header}, "unk_tbl_ptr_20" ) if( $unk_tbl_ptr_20 != 0xFFFFFFFF );
-
-my $unk_tbl_ptr_21 = &decipher( shift @dws, $dkey );
-printf "dw21: %08X\n", $unk_tbl_ptr_21;
-&allmedia_tbl( $unk_tbl_ptr_21, $BNL{header}, "unk_tbl_ptr_21" ) if( $unk_tbl_ptr_21 != 0xFFFFFFFF );
-
-my $unk_tbl_ptr_22 = &decipher( shift @dws, $dkey );
-printf "dw22: %08X\n", $unk_tbl_ptr_22;
-&allmedia_tbl( $unk_tbl_ptr_22, $BNL{header}, "unk_tbl_ptr_22" ) if( $unk_tbl_ptr_22 != 0xFFFFFFFF );
-
-my $unk_tbl_ptr_23 = &decipher( shift @dws, $dkey );
-printf "dw23: %08X\n", $unk_tbl_ptr_23;
-&allmedia_tbl( $unk_tbl_ptr_23, $BNL{header}, "unk_tbl_ptr_23" ) if( $unk_tbl_ptr_23 != 0xFFFFFFFF );
-
-my $unk_tbl_ptr_24 = &decipher( shift @dws, $dkey );
-printf "dw24: %08X\n", $unk_tbl_ptr_24;
-&allmedia_tbl( $unk_tbl_ptr_24, $BNL{header}, "unk_tbl_ptr_24" ) if( $unk_tbl_ptr_24 != 0xFFFFFFFF );
-
-my $unk_tbl_ptr_25 = &decipher( shift @dws, $dkey );
-printf "dw25: %08X\n", $unk_tbl_ptr_25;
-&allmedia_tbl( $unk_tbl_ptr_25, $BNL{header}, "unk_tbl_ptr_25" ) if( $unk_tbl_ptr_25 != 0xFFFFFFFF );
-
-my $unk_tbl_ptr_26 = &decipher( shift @dws, $dkey );
-printf "dw26: %08X\n", $unk_tbl_ptr_26;
-&allmedia_tbl( $unk_tbl_ptr_26, $BNL{header}, "unk_tbl_ptr_26" ) if( $unk_tbl_ptr_26 != 0xFFFFFFFF );
-
-
-my $unk_tbl_ptr_27 = &decipher( shift @dws, $dkey );
-printf "unk_tbl_ptr_27: %08X\n", $unk_tbl_ptr_27;
-&oid_tbl( $unk_tbl_ptr_27, $BNL{header}, "unk_tbl_ptr_27" );
-my $unk_tbl_ptr_28 = &decipher( shift @dws, $dkey );
-printf "unk_tbl_ptr_28: %08X\n", $unk_tbl_ptr_28;
-&oid_tbl( $unk_tbl_ptr_28, $BNL{header}, "unk_tbl_ptr_28" );
-my $unk_tbl_ptr_29 = &decipher( shift @dws, $dkey );
-printf "unk_tbl_ptr_29: %08X\n", $unk_tbl_ptr_29;
-&oid_tbl( $unk_tbl_ptr_29, $BNL{header}, "unk_tbl_ptr_29" );
-my $unk_tbl_ptr_2A = &decipher( shift @dws, $dkey );
-printf "quiz_results: %08X\n", $unk_tbl_ptr_2A;
-&oid_tbl( $unk_tbl_ptr_2A, $BNL{quiz}, "quiz_results" );
-
-
-
-printf "dw2B: %08X\n", &decipher( shift @dws, $dkey );
-printf "dw2C: %08X\n", &decipher( shift @dws, $dkey );
-printf "dw2D: %08X\n", &decipher( shift @dws, $dkey );
-printf "dw2E: %08X\n", &decipher( shift @dws, $dkey );
-printf "dw2F: %08X\n", &decipher( shift @dws, $dkey );
-printf "dw30: %08X\n", &decipher( shift @dws, $dkey );
-printf "dw31: %08X\n", &decipher( shift @dws, $dkey );
-printf "dw32: %08X\n", &decipher( shift @dws, $dkey );
-
-my $unk_tbl_ptr_33 = &decipher( shift @dws, $dkey );
-printf "dw33: %08X\n", $unk_tbl_ptr_33;
-&allmedia_tbl( $unk_tbl_ptr_33, $BNL{header}, "unk_tbl_ptr_33" ) if( $unk_tbl_ptr_33 != 0xFFFFFFFF );
-
-my $unk_tbl_ptr_34 = &decipher( shift @dws, $dkey );
-printf "dw34: %08X\n", $unk_tbl_ptr_34;
-&allmedia_tbl( $unk_tbl_ptr_34, $BNL{header}, "unk_tbl_ptr_34" ) if( $unk_tbl_ptr_34 != 0xFFFFFFFF );
-
-my $unk_tbl_ptr_35 = &decipher( shift @dws, $dkey );
-printf "dw35: %08X\n", $unk_tbl_ptr_35;
-&allmedia_tbl( $unk_tbl_ptr_35, $BNL{header}, "unk_tbl_ptr_35" ) if( $unk_tbl_ptr_35 != 0xFFFFFFFF );
-
-my $unk_tbl_ptr_36 = &decipher( shift @dws, $dkey );
-printf "dw36: %08X\n", $unk_tbl_ptr_36;
-&allmedia_tbl( $unk_tbl_ptr_36, $BNL{header}, "unk_tbl_ptr_36" ) if( $unk_tbl_ptr_36 != 0xFFFFFFFF );
-
-my $unk_tbl_ptr_37 = &decipher( shift @dws, $dkey );
-printf "dw37: %08X\n", $unk_tbl_ptr_37;
-&allmedia_tbl( $unk_tbl_ptr_37, $BNL{header}, "unk_tbl_ptr_37" ) if( $unk_tbl_ptr_37 != 0xFFFFFFFF );
-
-my $unk_tbl_ptr_38 = &decipher( shift @dws, $dkey );
-printf "dw38: %08X\n", $unk_tbl_ptr_38;
-&allmedia_tbl( $unk_tbl_ptr_38, $BNL{header}, "unk_tbl_ptr_38" ) if( $unk_tbl_ptr_38 != 0xFFFFFFFF );
-
-my $unk_tbl_ptr_39 = &decipher( shift @dws, $dkey );
-printf "dw39: %08X\n", $unk_tbl_ptr_39;
-&allmedia_tbl( $unk_tbl_ptr_39, $BNL{header}, "unk_tbl_ptr_39" ) if( $unk_tbl_ptr_39 != 0xFFFFFFFF );
-
-my $unk_tbl_ptr_3a = &decipher( shift @dws, $dkey );
-printf "dw3A: %08X\n", $unk_tbl_ptr_3a;
-&allmedia_tbl( $unk_tbl_ptr_3a, $BNL{header}, "unk_tbl_ptr_3A" ) if( $unk_tbl_ptr_3a != 0xFFFFFFFF );
-
-my $unk_tbl_ptr_3b = &decipher( shift @dws, $dkey );
-printf "dw3B: %08X\n", $unk_tbl_ptr_3b;
-&allmedia_tbl( $unk_tbl_ptr_3b, $BNL{header}, "unk_tbl_ptr_3B" ) if( $unk_tbl_ptr_3b != 0xFFFFFFFF );
-
-printf "dw3C: %08X\n", &decipher( shift @dws, $dkey );
-printf "dw3D: %08X\n", &decipher( shift @dws, $dkey );
-printf "dw3E: %08X\n", &decipher( shift @dws, $dkey );
-printf "dw3F: %08X\n", &decipher( shift @dws, $dkey );
-my $unk_tbl_ptr_40 = &decipher( shift @dws, $dkey );
-printf "dw40: %08X\n", $unk_tbl_ptr_40;
-&allmedia_tbl( $unk_tbl_ptr_40, $BNL{header}, "unk_tbl_ptr_40" ) if( $unk_tbl_ptr_40 != 0xFFFFFFFF );
-printf "dw41: %08X\n", &decipher( shift @dws, $dkey );
-printf "dw42: %08X\n", &decipher( shift @dws, $dkey );
-printf "dw43: %08X\n", &decipher( shift @dws, $dkey );
-printf "dw44: %08X\n", &decipher( shift @dws, $dkey );
-printf "dw45: %08X\n", &decipher( shift @dws, $dkey );
-printf "dw46: %08X\n", &decipher( shift @dws, $dkey );
-printf "dw47: %08X\n", &decipher( shift @dws, $dkey );
-printf "dw48: %08X\n", &decipher( shift @dws, $dkey );
-printf "dw49: %08X\n", &decipher( shift @dws, $dkey );
-printf "dw4A: %08X\n", &decipher( shift @dws, $dkey );
-printf "dw4B: %08X\n", &decipher( shift @dws, $dkey );
-printf "dw4C: %08X\n", &decipher( shift @dws, $dkey );
-printf "dw4D: %08X\n", &decipher( shift @dws, $dkey );
-printf "dw4E: %08X\n", &decipher( shift @dws, $dkey );
-printf "dw4F: %08X\n", &decipher( shift @dws, $dkey );
 
 printf "end of header processing\n\n";
 
@@ -350,9 +346,11 @@ sysread( IN, $buf, ( $oid_max - $oid_min + 1 ) * 4 );
 &mark_rbuf( ( $oid_max - $oid_min + 1 ) * 4 );
 my @ptrs = unpack( "V*", $buf );
 $BNL{oids} = {};
-my %OIDS;
 
+#these two variables are only for OID mapping (which is not needed anymore, as we have decoded the OCF table)
+my %OIDS;
 my $o_st = undef;
+
 my $cnt = $oid_min;
 while( @ptrs )
 {
@@ -385,6 +383,7 @@ if( defined $o_st )
 
 if( $save )
 {
+	#dump modified rbuf
 	open OUT, ">rbuf.dat" or die;
 	binmode OUT;
 	print OUT $rbuf;
@@ -396,14 +395,15 @@ print "oid-spans:[" . join( ",", sort keys %OIDS ) . "]\n";
 
 if( $save )
 {
+	#dump yaml if needed
 	open OUT, ">bnl.yaml" or die;
-	#print OUT YAML::Dump(\%BNL);
 	print OUT YAML::Dump($BNL{header},$BNL{quiz},$BNL{oids});
 	close OUT;
 
 }
 
-sub decipher()
+#this function simply xors pointer with dkey value or returns 'nothing' for 'nothing'
+sub get_ptr_value()
 {
 	my $val = $_[0];
 	my $dkey = $_[1];
@@ -413,10 +413,10 @@ sub decipher()
 	return $val ^ $dkey;
 }
 
+#reads media table and, optionally, extracts decrypted files
 sub media_tbl()
 {
 	my $ptr = $_[0];
-	my $buf;
 	my $cnt = 0;
 
 	my %BRS;
@@ -425,110 +425,114 @@ sub media_tbl()
 	my $key_length = scalar @key;
 
 	my $fptr;
-REPT:
-	sysseek( IN, $ptr, 0 );
-	sysread( IN, $buf, 8 );
-	&mark_rbuf( 8 );
-	my( $d1, $d2 ) = unpack( "VV", $buf );
-	$fptr = $d1 unless( defined $fptr );
 
-	#this basically checks for the end of media table
-	#because the number of media files is not stored anywhere (the one in the header is usually shorter)
-	#we check if there is end-of-table in form of zero-padding or if the end of the table is past start of first mp3 file
-	if( $d2 == 0 || $ptr+4 >= $fptr )
+	for(;;)
 	{
-		printf( "\textracted 0000 to %04d media files\n", $cnt - 1);
+		sysseek( IN, $ptr, 0 );
+		sysread( IN, $buf, 8 );
+		&mark_rbuf( 8 );
+		my( $d1, $d2 ) = unpack( "VV", $buf );
+		$fptr = $d1 unless( defined $fptr );
 
-		if( scalar keys %BRS )
+		#this basically checks for the end of media table
+		#because the number of media files is not stored anywhere (the one in the header is usually shorter)
+		#we check if there is end-of-table in form of zero-padding or if the end of the table is past start of first mp3 file
+		if( $d2 == 0 || $ptr+4 >= $fptr )
 		{
-			#outputting the most common bitrate combination
-			my $fk = ( sort { $BRS{$b} <=> $BRS{$a} } keys %BRS )[0];
-			my $perc = int( $BRS{$fk} * 100 / $cnt );
-			print "\tmp3s_br: $fk: $perc%\n";
+			printf( "\textracted 0000 to %04d media files\n", $cnt - 1);
+	
+			if( scalar keys %BRS )
+			{
+				#outputting the most common bitrate combination
+				my $fk = ( sort { $BRS{$b} <=> $BRS{$a} } keys %BRS )[0];
+				my $perc = int( $BRS{$fk} * 100 / $cnt );
+				print "\tmp3s_br: $fk: $perc%\n";
+			}
+			return;
 		}
-		return;
+
+		#printf( "\t%04d) %08X-%08X (%08X)\n", $cnt, $d1, $d2, $d2-$d1 );
+
+		my $ofn = sprintf( "media_%04d.mp3", $cnt );
+
+		my $extract_file = 0;
+		my $remove_file = 0;
+
+		if( $extract_mp3_br )
+		{
+			$extract_file = 1;
+			$remove_file = 1;
+		}
+
+		#order is important, remove gets overwritten on purpose here
+		if( $extract_mp3 )
+		{
+			$extract_file = 1;
+			$remove_file = 0;
+			$extract_mp3_br = 1;
+		}
+	
+		#if there is any extracted file with nonzero len, don't extract
+		if( -s $ofn )
+		{
+			$extract_file = 0;
+			$remove_file = 0;
+		}
+	
+		if( $extract_file )
+		{
+			my $buf;
+			sysseek( IN, $d1, 0 );
+			sysread( IN, $buf, $d2 - $d1 );
+			&mark_rbuf( $d2-$d1 );
+			&decrypt_mem( \$buf, \@key );
+			open OUT, ">" . $ofn or die;
+			binmode OUT;
+			print OUT $buf;
+			close OUT;
+		}
+		else
+		{
+			#nothing just marks rbuf data
+			sysseek( IN, $d2, 0 );
+			&mark_rbuf( $d2-$d1 );
+	
+		}
+	
+		if( $extract_mp3_br )
+		{
+			my $hr = get_mp3info( $ofn );
+			#BITRATE: 96
+			#COPYRIGHT: 0
+			#FRAMES: 299
+			#FRAME_LENGTH: 314
+			#FREQUENCY: 44.1
+			#LAYER: 3
+			#MM: 0
+			#MODE: 3
+			#MS: 835.166666666667
+			#OFFSET: 45
+			#PADDING: 0
+			#SECS: 7.83516666666667
+			#SIZE: 94022
+			#SS: 7
+			#STEREO: 0
+			#TIME: 00:07
+			#VBR: 0
+			#VERSION: 1
+			my $str = sprintf( "%skbps %s %s/%skHz", $$hr{BITRATE}, $$hr{VBR}? "VBR" : "CBR", $$hr{STEREO} ? "stereo":"mono", $$hr{FREQUENCY} );
+			#print "\t$ofn\t$str\n";
+			$BRS{ $str }++;
+		}
+	
+		if( $remove_file )
+		{
+			unlink $ofn;
+		}
+	
+		$cnt++;
+		$ptr += 4;
 	}
-
-	#printf( "\t%04d) %08X-%08X (%08X)\n", $cnt, $d1, $d2, $d2-$d1 );
-
-	my $ofn = sprintf( "media_%04d.mp3", $cnt );
-
-	my $extract_file = 0;
-	my $remove_file = 0;
-
-	if( $extract_mp3_br )
-	{
-		$extract_file = 1;
-		$remove_file = 1;
-	}
-
-	#order is important, remove gets overwritten on purpose here
-	if( $extract_mp3 )
-	{
-		$extract_file = 1;
-		$remove_file = 0;
-		$extract_mp3_br = 1;
-	}
-
-	if( -s $ofn )
-	{
-		$extract_file = 0;
-		$remove_file = 0;
-	}
-
-	if( $extract_file )
-	{
-		sysseek( IN, $d1, 0 );
-		sysread( IN, $buf, $d2 - $d1 );
-		&mark_rbuf( $d2-$d1 );
-		&decrypt_mem( \$buf, \@key );
-		open OUT, ">" . $ofn or die;
-		binmode OUT;
-		print OUT $buf;
-		close OUT;
-	}
-	else
-	{
-		#nothing
-		sysseek( IN, $d2, 0 );
-		&mark_rbuf( $d2-$d1 );
-
-	}
-
-	if( $extract_mp3_br )
-	{
-		my $hr = get_mp3info( $ofn );
-		#BITRATE: 96
-		#COPYRIGHT: 0
-		#FRAMES: 299
-		#FRAME_LENGTH: 314
-		#FREQUENCY: 44.1
-		#LAYER: 3
-		#MM: 0
-		#MODE: 3
-		#MS: 835.166666666667
-		#OFFSET: 45
-		#PADDING: 0
-		#SECS: 7.83516666666667
-		#SIZE: 94022
-		#SS: 7
-		#STEREO: 0
-		#TIME: 00:07
-		#VBR: 0
-		#VERSION: 1
-		my $str = sprintf( "%skbps %s %s/%skHz", $$hr{BITRATE}, $$hr{VBR}? "VBR" : "CBR", $$hr{STEREO} ? "stereo":"mono", $$hr{FREQUENCY} );
-		#print "\t$ofn\t$str\n";
-		$BRS{ $str }++;
-	}
-
-	if( $remove_file )
-	{
-		unlink $ofn;
-	}
-
-	$cnt++;
-	$ptr += 4;
-	goto REPT;
 }
 
 sub allmedia_tbl()
@@ -539,7 +543,6 @@ sub allmedia_tbl()
 
 	sysseek( IN, $ptr, 0 );
 	my $lcnt = 0;
-	my @bnla;
 
 	for(;;)
 	{
@@ -550,7 +553,6 @@ sub allmedia_tbl()
 		if( $cnt == 0 )
 		{
 			print "\tcnt: 0\n";
-			#push @bnla, [$lcnt,[]];
 		}
 		else
 		{
@@ -559,18 +561,11 @@ sub allmedia_tbl()
 			$ptr += $cnt * 2;
 			my @vals = unpack( "v*", $buf );
 			print "\tcnt: $cnt, media:[", join( ", ", map( sprintf( "%04d", $_ ), @vals ) ), "]\n";
-			#push @bnla, [$lcnt,[map( sprintf( "media_%04d.mp3", $_), @vals)]];
 			$$hr_bnl{ $bnl_key }{ "mode_" . $lcnt } = [map( sprintf( "media_%04d.mp3", $_), @vals)];
 		}
 		$lcnt++;
-		if( $lcnt >= $book_modes )
-		{
-			#print "\treturn on cnt $book_modes\n";
-			last;
-		}
+		last if( $lcnt >= $book_modes );
 	}
-
-	#$$hr_bnl{$bnl_key} = \@bnla;
 }
 
 sub oid_tbl()
@@ -598,22 +593,26 @@ sub quiz_tbl()
 	my $first_ptr = undef;
 
 	my $cnt = 0;
-REPT:
-	sysseek( IN, $ptr, 0 );
-	sysread( IN, $buf, 4 );
-	&mark_rbuf( 4 );
-	my $dptr = unpack( "V", $buf );
+	for(;;)
+	{
+		sysseek( IN, $ptr, 0 );
+		sysread( IN, $buf, 4 );
+		&mark_rbuf( 4 );
+		my $dptr = unpack( "V", $buf );
 
-	printf( "\tquiz %04X) ptr/%08X\n", $cnt+100, $dptr );
-	&quiz_one_quiz( $dptr );
+		printf( "\tquiz %04X) ptr/%08X\n", $cnt+100, $dptr );
+		&quiz_one_quiz( $dptr );
 
-	$first_ptr = $dptr if( ! defined $first_ptr );
+		$first_ptr = $dptr if( ! defined $first_ptr );
 
-	$ptr += 4;
-	$cnt++;
+		$ptr += 4;
+		$cnt++;
 
-	return if( defined $first_ptr && $ptr >= $first_ptr );
-	goto REPT;
+		#this works on assumption that first pointer points exactly after last pointer in the quiz table
+		#because if I have loaded the correct book, I'd never get higher quiz OID than the length of the page
+		#but, what would happen if I have book with 6 quizes and then I touch quiz 7 from other book?
+		last if( defined $first_ptr && $ptr >= $first_ptr );
+	}
 }
 
 sub quiz_one_quiz()
@@ -626,11 +625,11 @@ sub quiz_one_quiz()
 	my( $q_type, $q_cnt, $q_asked, $q_unk, $q_oid ) = unpack( "v*", $buf );
 	printf( "\t\tqtype:%04X cnt:%04X questions:%04X unk:%04X quiz_intro_oid: %04X\n", $q_type, $q_cnt, $q_asked, $q_unk, $q_oid );
 
-	my %H;
-	$H{ q_type } = sprintf( "0x%04X", $q_type );
-	$H{ q_asked } = sprintf( "0x%04X", $q_asked );
-	$H{ q_unk } = sprintf( "0x%04X", $q_unk );
-	$H{ q_oid } = sprintf( "oid_x%04X", $q_oid );
+	my %ONE_QUIZ;
+	$ONE_QUIZ{ q_type } = sprintf( "0x%04X", $q_type );
+	$ONE_QUIZ{ q_asked } = sprintf( "0x%04X", $q_asked );
+	$ONE_QUIZ{ q_unk } = sprintf( "0x%04X", $q_unk );
+	$ONE_QUIZ{ q_oid } = sprintf( "oid_x%04X", $q_oid );
 
 	#die if( $q_type != 0 );
 	#die if( $w3 != 0 );
@@ -646,6 +645,8 @@ sub quiz_one_quiz()
 		printf( "\t\t\tptr/%08X: ", $ptr );
 		sysseek( IN, $ptr, 0 );
 
+		#explicit handling of quiz type 4
+		#this should be 'special handling' of quiz with less questions than default
 		if( $q_type == 4 )
 		{
 			sysread( IN, $buf, 8 );
@@ -685,12 +686,12 @@ sub quiz_one_quiz()
        		}	
 		else
 		{
+			#implicitely all quiz types are handled here (but only type 0 should actually be)
 			#if( $q_type == 0 ) -> we won't check now
 			sysread( IN, $buf, 6 );
 			&mark_rbuf( 6 );
 			my( $q1_unk, $q1_oid, $oid_cnt ) = unpack( "v*", $buf );
 			printf( "quiz_question0 unk:%04X oid_question:%04X replies_oids:[", $q1_unk, $q1_oid );
-			#die if( $w10 != $w11 );
 			sysread( IN, $buf, 2* $oid_cnt );
 			&mark_rbuf( 2 * $oid_cnt );
 			my @vals = unpack( "v*", $buf );
@@ -699,10 +700,14 @@ sub quiz_one_quiz()
 		}
 	}
 
-	$H{ questions } = \@quiz_questions;
-	push @{ $BNL{ quiz }{ quizes } }, \%H;
+	#stores all questions into quiz
+	$ONE_QUIZ{ questions } = \@quiz_questions;
+
+	#stores one quiz into all quizes
+	push @{ $BNL{ quiz }{ quizes } }, \%ONE_QUIZ;
 }
 
+#this creates 512 bytes long array full of zeroes with some bytes (16 in each block of 64) replaced by pre-key bytes
 sub keygen()
 {
 	my $ar_pre_key = $_[0];
@@ -765,91 +770,8 @@ sub decrypt_mem()
 	$$rbuf = pack( "C*", @d );
 }
 
-sub decrypt_memM()
-{
-	my $rbuf = $_[0];
-	my $ar_key = $_[1];
-	my $key_length = scalar( @$ar_key );
-	die "assert keylength" if( $key_length != 0x200 );
-	
-	my @d = unpack( "C*", $$rbuf );
-
-	my @nkey;
-	my @key;
-	my $cnt = 0;
-	foreach my $k ( @$ar_key )
-	{
-		$nkey[$cnt] = $k ^ 0xFF;
-		$key[$cnt] = $k;
-		$cnt++;
-	}
-
-	my $kptr = 0;
-	my $kk;
-	my $kn;
-	foreach my $d ( @d )
-	{
-		$kk = $key[$kptr];
-		$kn = $nkey[$kptr];
-
-		if( $d != 0 && $d != 0xFF && $kk && $d != $kk && $d != $kn )
-		{
-			$d ^= $kk;
-		}
-		#$kptr = ( $kptr + 1 ) % $key_length;
-		$kptr++;
-		$kptr = 0 if( $kptr >= $key_length );
-	}
-	$$rbuf = pack( "C*", @d );
-}
-
-sub decrypt_memT()
-{
-	my $rbuf = $_[0];
-	my $ar_key = $_[1];
-	my $key_length = scalar( @$ar_key );
-
-	my $zero = chr(0x00);
-	my $efef = chr(0xff);
-
-	my @kv;
-	my @kvn;
-
-	my $cnt = 0;
-	foreach my $k ( @$ar_key )
-	{
-		$kv[$cnt] = chr( $k );
-		$kvn[$cnt] = chr( $k ^ 0xFF );
-		$cnt++;
-	}
-
-	my $kptr = 0;
-	my $ok;
-	for( my $i = 0; $i < length( $$rbuf ); $i++ )
-	{
-		if( $$ar_key[$kptr] )
-		{
-			my $d = substr( $$rbuf, $i, 1 );
-			if( ($d ne $zero) && ($d ne $efef) && ($d ne $kv[$kptr]) && ($d ne $kvn[$kptr]) )
-			{
-				#substr( $$rbuf, $i, 1 ) ^= $kv[$kptr];
-				$ok .= $kv[$kptr];
-			}
-			else
-			{
-				$ok .= $zero;
-			}
-		}
-		else
-		{
-			$ok .= $zero;
-		}
-		$kptr++;
-		$kptr = 0 if( $kptr >= $key_length );
-	}
-	$$rbuf ^= $ok;
-}
-
+#this overwrites $len bytes back from current pointer in $rbuf buffer with # characters
+#this is only debugging helper which helps me see which bytes were touched by the disassembler
 sub mark_rbuf()
 {
 	my $len = $_[0];
@@ -865,6 +787,8 @@ sub mark_rbuf()
 	substr( $rbuf, $ptr, $len ) = '#' x $len;
 }
 
+#this just replaces chars # \0 and \xFF with nothing and counts them
+#ideally, when everything is parsed, result is 0
 sub verify_rbuf()
 {
 	my $str = substr( $rbuf, $lo_rbuf, $hi_rbuf-$lo_rbuf );
@@ -895,6 +819,7 @@ sub rawoid2oid()
 	die;
 }
 
+#this function generated by oid_table_extract.pl
 sub oid_converter_init()
 {
 	#index to the array is INTERNAL pen code (index to OID table). Value in the array is RAW, printed code
