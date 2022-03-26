@@ -1,6 +1,9 @@
-﻿#extractor of raw->internal OIDs from OidProducer.exe
+﻿# extractor of raw->internal OIDs from OidProducer.exe
+# written by jindroush, published under MPL license
+# part of https://github.com/jindroush/albituzka
+#
 #works with file with MD5 78af7c4610995f7b98f35e3261e3dd19
-#for other file versions/MD5, seek constant must be most probably changed
+#for other file versions/MD5, seek constant TBL must be most probably changed
 use constant TBL => 0x8F9DE0;
 
 use strict;
@@ -8,8 +11,10 @@ use strict;
 open IN, "OidProducer10.20.exe" or die;
 binmode IN;
 
+#seek to table
 sysseek( IN, TBL, 0 );
 my $buf;
+#read 64k ints
 sysread( IN, $buf, 65536 * 4 );
 close IN;
 
@@ -19,7 +24,7 @@ if( scalar @dw != 0x10000 )
 	die "reading of table failed";
 }
 
-
+#create 'dense' table
 my $first;
 my @o;
 
@@ -60,7 +65,7 @@ if( $first )
 	push @o, $first . ".." . $last;
 }
 
-
+#and generate perl init routine
 open OUT, ">perl_code.txt" or die;
 
 print OUT "sub oid_converter_init()\n";
