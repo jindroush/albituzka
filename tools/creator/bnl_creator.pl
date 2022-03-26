@@ -2,7 +2,7 @@
 # written by jindroush, published under MPL license
 # part of https://github.com/jindroush/albituzka
 # this tool consumes bnl.yaml file as produced by bnl_dis.pl tool and creates bnl output file
-# parameter:
+# parameters:
 #	-input FNAME - changes input filename (default: bnl.yaml)
 #	-output FNAME - change output filename (default: bnl.bnl)
 
@@ -14,16 +14,20 @@
 # 19.03.2022 jindroush	added additional oid code formats oid_dec,oid_xHHHH,oid_dec_name,oid_xHHHH_name
 #				additional checks of duplicate oids
 #				generates file generate_oids.yaml -> input to oid_png_generator.pl @generate_oids.yaml [switches]
+# 23.03.2022 jindroush	added additional checks for presence of mp3 files / unused mp3 files
+
 
 #todo 
 #creation report
 
 use strict;
 use YAML;
+use File::Spec::Functions qw( splitpath catfile );
 
 #globals for user
 my $input_fn = "bnl.yaml";
 my $output_fn = "bnl.bnl";
+my $media_dir = ".";
 my $encryption = 1;
 
 #globals general
@@ -199,6 +203,12 @@ foreach ( @oid_tables )
 }
 #in this moment, we should have parsed all oid-mode-media tables, so we know the max_book_mode
 die "Max book mode left uninitialized after parsing. Input json file is incorrect." if( $max_book_mode == -1 );
+#actually, there is a question if algorithms of guessing max_book_mode and min_oid/max_oid and possibly also media_cnt
+#should be done this way
+#there are two ways:
+#1) store the values hardcoded into YAML input, and warn/die if the bounds are not met
+#2) guess the values as maxima/minima from the actual data
+#I chose 2) which is slightly more complicated and doesn't always produce exact replica of disassembled input
 $max_book_mode++;
 substr( $block_header, 0x2C, 4 ) = pack( "V", $max_book_mode );
 print "Book modes: $max_book_mode\n";
@@ -230,13 +240,13 @@ $block_oids = "\xFF" x ( ( $max_oid - $min_oid + 1 ) * 4 );
 my $ptr_others = length( $block_header ) + length( $block_oids );
 
 
-#writing all mediatables referenced from header
+#writing all media_arrays referenced from header
 foreach ( @oid_tables )
 {
 	&write_media_arrays_hdr( $$_[0] * 4, $$hr_bnl{ header }{ $$_[1] } );
 }
 
-# and patch oid array (also mediatables)
+# write all media_arrays associated with an OID and patch oid array (also mediatables)
 for( my $i = $min_oid; $i <= $max_oid; $i++ )
 {
 	my $k = $OID_ARR[ $i ];
@@ -283,10 +293,13 @@ print OUT $block_media;
 close OUT;
 printf "Created $output_fn, %d bytes long.\n", -s $output_fn;
 
-
+#this creates helper YAML file which could be fed to oid_png_generator.pl
+#it saves lots of work of generating pngs one by one
 my @to_print;
+#always generate start icon
 &generate_print( \@to_print, $book_id, "icon_start" );
 
+#values of know system icons
 my %SYS_ICONS = (
 	"volume_up" => 0x07,
 	"volume_down" => 0x08,
@@ -294,6 +307,22 @@ my %SYS_ICONS = (
 	"compare" => 0x63
 );
 
+#generate oids for system icons
+foreach my $icon ( @{ $$hr_bnl{ header }{ sys_icons } } )
+{
+	my $oid;
+
+	if( exists $SYS_ICONS{ $icon } )
+	{
+		&generate_print( \@to_print, $SYS_ICONS{ $icon }, "icon_" . $icon );
+	}
+	else
+	{
+		die "Referencing unknow sys_icon '$icon'";
+	}
+}
+
+#values of all 12 modes
 my %MODE_ICONS = (
 	"mode_1" => 0x04,
 	"mode_2" => 0x05,
@@ -309,20 +338,7 @@ my %MODE_ICONS = (
 	"mode_12" => 0x022B
 );
 
-foreach my $icon ( @{ $$hr_bnl{ header }{ sys_icons } } )
-{
-	my $oid;
-
-	if( exists $SYS_ICONS{ $icon } )
-	{
-		&generate_print( \@to_print, $SYS_ICONS{ $icon }, "icon_" . $icon );
-	}
-	else
-	{
-		die "Referencing unknow sys_icon '$icon'";
-	}
-}
-
+#generate oids for used modes
 for( my $mode = 0; $mode < $max_book_mode; $mode++ )
 {
 	my $k = sprintf( "mode_%d", $mode );
@@ -330,6 +346,7 @@ for( my $mode = 0; $mode < $max_book_mode; $mode++ )
 	&generate_print( \@to_print, $MODE_ICONS{ $k }, "icon_" . $k );
 }
 
+#generate oids for all quizes
 for( my $oid = 100; $oid <= 499; $oid++ )
 {
 	my $k = $OID_ARR[ $oid ];
@@ -338,6 +355,8 @@ for( my $oid = 100; $oid <= 499; $oid++ )
 	&generate_print( \@to_print, $oid, "icon_quiz_" . ($oid -99) );
 }
 
+#and generate oids for all user defined oids
+#always skip non-printed oids (this is a bit of guessing)
 for( my $oid = 10000; $oid <= $max_oid; $oid++ )
 {
 	my $k = $OID_ARR[ $oid ];
@@ -345,9 +364,10 @@ for( my $oid = 10000; $oid <= $max_oid; $oid++ )
 	next if( $oid_noprint{ $oid } );
 	my $kk = $k;
 	$kk =~ s/^oid_//;
-	&generate_print( \@to_print, $oid, "graphics_" . $kk );
+	&generate_print( \@to_print, $oid, $kk );
 }
 
+#and print them to file
 if( @to_print )
 {
 	open OUT, ">" . "generate_oids.yaml" or die;
@@ -360,13 +380,11 @@ print "Done.\n";
 sub generate_print()
 {
 	my $ar = $_[0];
-	my $oid = $_[1];
-	my $fname = $_[2] . ".png";
 
-	my %H;
-	$H{ oid } = $oid;
-	$H{ fname } = $fname;
-	push @$ar, \%H;
+	my %ONE_OID;
+	$ONE_OID{ oid } = $_[1];
+	$ONE_OID{ fname } = "oid_" . $_[2] . ".png";
+	push @$ar, \%ONE_OID;
 }
 
 sub parse_media_arrays()
@@ -384,9 +402,10 @@ sub parse_media_arrays()
 		}
 		else
 		{
-			die "Expected keyword mode_X, invalid input file";
+			die "Expected keyword mode_X, got '$modea', invalid input file";
 		}
 
+		#here we're getting highest possible book_mode
 		$max_book_mode = $mode if( $max_book_mode < $mode );
 		foreach ( @{ $$hr{$modea} } )
 		{
@@ -448,6 +467,7 @@ sub write_media_array()
 		}
 		else
 		{
+			#if the mode is skipped, we just write \0 as 'empty' array
 			$sub = pack( "v", 0 );
 		}
 		$blk .= $sub;
@@ -641,36 +661,82 @@ sub write_all_media()
 
 	my @ptrs;
 
-	#hardcoded 0x200 value here - it's the file start padding value, and as such, it depends probably on
-	#mp3 library limitations
+	my %FILES;
+	local *DIR;
+	opendir DIR, $media_dir or die;
+	while( my $e = readdir DIR )
+	{
+		next if( $e eq '.' || $e eq '..' );
+		next if( $e !~ /\.mp3$/i );
+
+		my $f = catfile( $media_dir, $e );
+		$FILES{ $f } = 0;		
+	}
+	closedir DIR;
+
+	my $errors = 0;
+
+	#hardcoded 0x200 value here - it's the file start padding value, and as such, it depends
+	#on mp3 library limitations or, more probably, on fat-on-sdcart sectors
 	foreach my $fn ( @arr )
 	{
 		my $before_me = $ptr_others + length( $block_others ) + length( $block_media );
 
-		my $rem = $before_me % 0x200;
+		my $remains_to_be_padded = $before_me % 0x200;
 
 		my $blk;
-		if( $rem )
+		if( $remains_to_be_padded )
 		{
-			$blk = "\x00" x ( 0x200 - $rem );
-			$before_me += 0x200 - $rem;
+			$blk = "\x00" x ( 0x200 - $remains_to_be_padded );
+			$before_me += 0x200 - $remains_to_be_padded;
 		}
 
 		local *IN;
-		open IN, $fn or die "Input file references sound file '$fn' which is not there/can't be opened";
+
+		my $ffn = catfile( $media_dir, $fn );
+		if( ! open IN, $ffn )
+		{
+			print "Input file references sound file '$ffn' which is not there/can't be opened\n";
+			$errors++;
+			next;
+		}
 		binmode IN;
-		my $l = -s $fn;
+		my $l = -s $ffn;
 		my $buf;
 		sysread( IN, $buf, $l );
 		close IN;
+
+		if( exists $FILES{ $ffn } )
+		{
+			$FILES{ $ffn } = 1;
+		}
+		else
+		{
+			print "warning: file '$ffn' referenced is not in media dir '$media_dir'\n";
+		}
 
 		&decrypt_mem( \$buf, \@real_key );
 		$block_media .= $blk . $buf;
 		push @ptrs, $before_me;
 	}
+
+	if( $errors )
+	{
+		die "There were errors loading mp3 files, stopping.";
+	}
+
 	die "Assertion failed (number of pointers doesn't match number of media files)" if( scalar @ptrs != $media_cnt );
 	push @ptrs, $ptr_others + length( $block_others ) + length( $block_media );
 	substr( $block_others, $media_table_beg, 4*scalar(@ptrs) ) = pack( "V*", @ptrs );
+
+	#just for warning that there are some unused media files (may signal omission in YAML authoring)
+	foreach my $f ( sort keys %FILES )
+	{
+		if( ! $FILES{ $f } )
+		{
+			print "warning: there is unreferenced file in media dir: '$f'\n";
+		}
+	} 
 }
 
 sub keygen()
@@ -762,9 +828,12 @@ sub load_input()
 	printf "Loaded %d lines from %s\n", $lines, $input_fn;
 
 	( $BNL{header},$BNL{quiz},$BNL{oids} ) = YAML::Load( $yaml_a );
-	die if( ref( $BNL{header} ) ne "HASH" );
-	die if( ref( $BNL{quiz} ) ne "HASH" );
-	die if( ref( $BNL{oids} ) ne "HASH" );
+	my $bad = 0;
+	$bad = 1 if( ref( $BNL{header} ) ne "HASH" );
+	$bad = 1 if( ref( $BNL{quiz} ) ne "HASH" );
+	$bad = 1 if( ref( $BNL{oids} ) ne "HASH" );
+
+	die "Input file '$input_fn' is malformed, one of the three main sections is missing!\n" if( $bad );
 
 	print "Parsed input data.\n";
 }
