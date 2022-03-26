@@ -1,7 +1,12 @@
 ﻿# albi firmware file identifier/cutter
+# written by jindroush, published under MPL license
 # part of https://github.com/jindroush/albituzka
+
+#cmdline:
 # fw_cutter.pl input_file [switches]
 # -save - save firmware internal files
+#
+# input_file is update.chp/updateA.chp
 
 use strict;
 use Encode;
