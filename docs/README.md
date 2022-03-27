@@ -1,11 +1,16 @@
 ### Lokální dokumentace
 - [albituzka_firmware.pdf](albituzka_firmware.pdf) - popis zjištěných informací o firmware tužky
-- [albituzka_nastroje.pdf](albituzka_nastroje.pdf) - popis skriptů v adresáři tools a jak je rozběhat a obsluhovat
 - [albituzka_soft.xlsx](albituzka_soft.xlsx) - přehled všech stažených BNL souborů, s několika základními charakteristikami
+
+### Série článků o vnitřnostech tužky na Táta Geek
+- https://tatageek.blog/2021/01/28/jak-funguje-albi-tuzka/
+- https://tatageek.blog/2022/02/28/jak-funguji-bnl-soubory-pro-albi-tuzku/
+- https://tatageek.blog/2022/03/07/zaklady-zpetneho-inzenyrstvi/
+- https://tatageek.blog/2022/03/14/hacking-a-cracking-bnl-souboru-pro-albi-tuzku/
+- https://tatageek.blog/2022/03/21/hacking-a-cracking-bnl-souboru-pro-albi-tuzku-2-cast/
 
 ### Info české
 - https://tapkame.cz/kouzelne-cteni-od-albi-rozhovor-o-projektu-pripravovanych-novinkach-vcetne-anglicke-verze-i-uzitecne-informace-pro-ctenare/
-- https://tatageek.blog/2021/01/28/jak-funguje-albi-tuzka/
 - https://forum.root.cz/index.php?topic=22676.0
 
 ### Info cizí
