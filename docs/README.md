@@ -9,6 +9,7 @@
 - https://tatageek.blog/2022/03/07/zaklady-zpetneho-inzenyrstvi/
 - https://tatageek.blog/2022/03/14/hacking-a-cracking-bnl-souboru-pro-albi-tuzku/
 - https://tatageek.blog/2022/03/21/hacking-a-cracking-bnl-souboru-pro-albi-tuzku-2-cast/
+- https://tatageek.blog/2022/03/28/jak-vytvorit-vlastni-knizku-pro-albi-tuzku/
 
 ### Info české
 - https://tapkame.cz/kouzelne-cteni-od-albi-rozhovor-o-projektu-pripravovanych-novinkach-vcetne-anglicke-verze-i-uzitecne-informace-pro-ctenare/
