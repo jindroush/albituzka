@@ -32,10 +32,14 @@
 - SI https://www.zabavnoucenje.com/si/datoteke-za-kuku
 - HR https://www.zabavnoucenje.com/hr/datoteke-za-kuku
 
-### Kompatibilní soubory bnl (nějaké anglicko-arabské učebnice)
+### Kompatibilní soubory bnl
 - http://www.speakitbooks.com/books.html
+	(nějaké anglicko-arabské učebnice)
+- https://smartkoala.com.ua/ru/ruchka-kasper
+- https://smartkoala.com.ua/ru/ruchka-robot
 
 ### Nekompatibilní soubory bnl
+- https://smartkoala.com.ua/ru/ruchka-s-lohotypom
 - https://www.jlb.com.sg/download/for-ppw-series-1-5-.html
 - https://einstylo.ca/Download2.php?reader=2%20&%20lang=2
 - https://www.dahhsin.com.tw/downLoad.php?lv01_type=PEN-BOOK
