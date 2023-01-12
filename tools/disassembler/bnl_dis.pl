@@ -18,6 +18,7 @@
 # 14.02.2022 jindroush	changed all json constant to hex, also exporting type4 quiz
 # 15.02.2022 jindroush	changed json varnames to make more sense
 # 20.02.2022 jindroush	changed oid converter to OID2.0
+# 12.01.2023 jindroush	some files can have oid table on other offset than 0x200
 
 use strict;
 use YAML;
@@ -86,7 +87,10 @@ printf "dkey: %08X\n", $dkey;
 $BNL{header}{encryption}{ header_key } = sprintf( "0x%08X", $dkey );
 my $oid_table_ptr = &get_ptr_value( shift @dws, $dkey );
 printf "end of header/oid table ptr: %08X\n", $oid_table_ptr;
-die if( $oid_table_ptr != 0x200 );
+
+#removed the check
+#die sprintf( "Oid table pointing to 0x%X, expecting 0x200?!", $oid_table_ptr ) if( $oid_table_ptr != 0x200 );
+die sprintf( "Oid table pointing to 0x%X, expecting multiples of 0x200", $oid_table_ptr ) if( !$oid_table_ptr || ( $oid_table_ptr % 0x200 ) );
 
 #table of pointers of media files
 my $mtbl_ptr = &get_ptr_value( shift @dws, $dkey );
@@ -341,7 +345,7 @@ printf "end of header processing\n\n";
 
 
 print "OID2media table start\n";
-sysseek( IN, 0x200, 0 );
+sysseek( IN, $oid_table_ptr, 0 );
 sysread( IN, $buf, ( $oid_max - $oid_min + 1 ) * 4 );
 &mark_rbuf( ( $oid_max - $oid_min + 1 ) * 4 );
 my @ptrs = unpack( "V*", $buf );
@@ -358,7 +362,7 @@ while( @ptrs )
 
 	if( $ptr != 0xFFFFFFFF )
 	{
-		printf( "file oid-%04X [paper:%04X]) %08X %08X\n", $cnt, &oid2rawoid( $cnt ), 0x200 + 4*($cnt-$oid_min), $ptr );
+		printf( "file oid-%04X [paper:%04X]) %08X %08X\n", $cnt, &oid2rawoid( $cnt ), $oid_table_ptr + 4*($cnt-$oid_min), $ptr );
 		&allmedia_tbl( $ptr, $BNL{ oids }, sprintf( "oid_x%04X", $cnt ) );
 
 		$o_st = $cnt if( !defined $o_st );
