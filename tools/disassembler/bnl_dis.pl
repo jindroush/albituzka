@@ -18,7 +18,7 @@
 # 14.02.2022 jindroush	changed all json constant to hex, also exporting type4 quiz
 # 15.02.2022 jindroush	changed json varnames to make more sense
 # 20.02.2022 jindroush	changed oid converter to OID2.0
-# 12.01.2023 jindroush	some files can have oid table on other offset than 0x200
+# 12.01.2023 jindroush	some files can have oid table on other offset than 0x200 (wonder if that's Albi pen compatible?)
 
 use strict;
 use YAML;
