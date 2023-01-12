@@ -37,10 +37,14 @@
 	(nějaké anglicko-arabské učebnice)
 - https://smartkoala.com.ua/ru/ruchka-kasper
 - https://smartkoala.com.ua/ru/ruchka-robot
+- https://www.emoti.com.sg/collections/audible-book
+	(tlačítko download audio je u každé knížky v eshopu)
 
 ### Nekompatibilní soubory bnl
-- https://smartkoala.com.ua/ru/ruchka-s-lohotypom
 - https://www.jlb.com.sg/download/for-ppw-series-1-5-.html
 - https://einstylo.ca/Download2.php?reader=2%20&%20lang=2
 - https://www.dahhsin.com.tw/downLoad.php?lv01_type=PEN-BOOK
 - https://www.nekids.co.kr/_pages/nepen/downloadList.asp
+- https://smartkoala.com.ua/ru/ruchka-s-lohotypom
+- https://www.oupchina.com.hk/en/oxford-reading-pen-kindergarten-learning/download
+- https://discovertalkingpen.com/pages/audio-downloads
