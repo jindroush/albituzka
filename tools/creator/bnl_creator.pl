@@ -52,7 +52,7 @@ while( @ARGV )
 	my $sw = shift @ARGV;
 	if( $sw =~ /^(\-|\-\-|\/)(.+)$/ )
 	{
-		$sw = lc $sw;
+		$sw = lc $2;
 
 		if( $sw eq 'input' )
 		{
