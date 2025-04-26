@@ -15,7 +15,7 @@
 #				additional checks of duplicate oids
 #				generates file generate_oids.yaml -> input to oid_png_generator.pl @generate_oids.yaml [switches]
 # 23.03.2022 jindroush	added additional checks for presence of mp3 files / unused mp3 files
-
+# 19.04.2025 jindroush	added handling of quiz type 8
 
 #todo 
 #creation report
@@ -568,7 +568,7 @@ sub write_quiz()
 		$quiz_ptrs[$cnt_quiz] = $ptr_others + length( $block_others );
 		my $ar_questions = $$hr_quiz{ questions };
 		my $quiz_type = hex($$hr_quiz{q_type} );
-		if( $quiz_type != 0 && $quiz_type != 4 )
+		if( $quiz_type != 0 && $quiz_type != 4 && $quiz_type != 8 )
 		{
 			printf "warning: quiz_type %d is not documented, could cause unknown behavior!\n", $quiz_type;
 		}
@@ -601,7 +601,7 @@ sub write_quiz()
 		{
 			push @questions_beg, length( $block_questions );
 
-			if( $quiz_type == 4 )
+			if( $quiz_type == 4 || $quiz_type == 8 )
 			{
 				&warn_on_oid( $$hr_question{ q4_oid }, "q4_oid" );
 
