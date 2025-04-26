@@ -19,6 +19,8 @@
 # 15.02.2022 jindroush	changed json varnames to make more sense
 # 20.02.2022 jindroush	changed oid converter to OID2.0
 # 12.01.2023 jindroush	some files can have oid table on other offset than 0x200 (wonder if that's Albi pen compatible?)
+# 14.04.2025 jindroush	found 'known' oid table with 0xFFFFFFFF value which was not checked.
+# 19.04.2025 jindroush	seems like there is something like type8 which is same as type4 quiz (vroubek)
 
 use strict;
 use YAML;
@@ -320,7 +322,7 @@ my $dw = shift @pre_key;
 
 #we know for sure that first dword is needed on real hardware for decryption
 #since we don't understand how the key derivation really works
-#we'll need to use this as an hardcoded value
+#we'll need to use this as a hardcoded value
 printf( "key modifier: %02X\n", $k3 );
 $BNL{header}{encryption}{ prekey_dw } = sprintf( "0x%08X", $dw );
 $BNL{header}{encryption}{ prekey } = [ map( { sprintf( "0x%02X", $_ ) } @pre_key )];
@@ -578,6 +580,9 @@ sub oid_tbl()
 	my $hr_bnl = $_[1];
 	my $bnl_key = $_[2];
 
+	#added 14.04.2025 - wrongly assumed that table has to point somewhere
+	return if( $ptr == 0xFFFFFFFF );
+
 	sysseek( IN, $ptr, 0 );
 	my $buf;
 	sysread( IN, $buf, 2 );
@@ -651,13 +656,27 @@ sub quiz_one_quiz()
 
 		#explicit handling of quiz type 4
 		#this should be 'special handling' of quiz with less questions than default
-		if( $q_type == 4 )
+		if( $q_type == 4 || $q_type == 8 )
 		{
 			sysread( IN, $buf, 8 );
 			&mark_rbuf( 8 );
 
 			my( $q4_oid, $q4_unk1, $q4_unk2, $q4_unk3 ) = unpack( "v*", $buf );
-			printf( "quiz_question4 oid:%04X unk1:%04X unk2:%04X unk3:%04X\n", $q4_oid, $q4_unk1, $q4_unk2, $q4_unk3 );
+
+			if( $q_type == 4 )
+			{
+				printf( "quiz_question4 " );
+			}
+			elsif( $q_type == 8 )
+			{
+				printf( "quiz_question8 " );
+			}
+			else
+			{
+				die;
+			}
+
+			printf( "oid:%04X unk1:%04X unk2:%04X unk3:%04X\n", $q4_oid, $q4_unk1, $q4_unk2, $q4_unk3 );
 			
 			my %Q4;
 
