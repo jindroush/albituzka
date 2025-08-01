@@ -146,10 +146,10 @@ word 419x	comment:rom unpar11
 
 
 asm 10548
-jumptable 7x
+jumptable 7x	base:1
 
 asm 4172
-jumptable 8x
+jumptable 8x	base:2
 
 asm 0xa4c
 
@@ -316,70 +316,70 @@ asm 0xe4
 jumptable 5x	base:0x2
 
 asm 0x2F8
-jumptable 34x	base:0x30
+jumptable 34x	base:0x30	prefix:switch_on_button_fwcode.6
 
 asm 0x38
-jumptable 4x	base:0xc0
+jumptable 4x	base:0xc0	prefix:switch_on_button_fwcode.6
 
 asm 0x38
-jumptable 22x	base:0x70
+jumptable 22x	base:0x70	prefix:switch_on_button_fwcode.6
 
 asm 0x48
-jumptable 13x	base:0xe0
+jumptable 13x	base:0xe0	prefix:switch_on_button_fwcode.6
 
 asm 0x4AE
-jumptable 48x	base:0xc0	prefix:switch_handler_fwcode|a
+jumptable 48x	base:0xc0	prefix:switch_on_oid_fwcode.6
 
 asm 0x38
-jumptable 34x	base:0x30	prefix:switch_handler_fwcode|a
+jumptable 34x	base:0x30	prefix:switch_on_oid_fwcode.6
 
 asm 0x70
-jumptable 6x	base:0x80	prefix:switch_handler_fwcode|a
+jumptable 6x	base:0x80	prefix:switch_on_oid_fwcode.6
 
 asm 0x72
-jumptable 22x	base:0xf01	prefix:switch_handler_fwcode|a
+jumptable 22x	base:0xf01	prefix:switch_on_oid_fwcode.6
 
 asm 0x3E
-jumptable 9x	base:0x400	prefix:switch_handler_fwcode|a
+jumptable 9x	base:0x400	prefix:switch_on_oid_fwcode.6
 
 asm 0x3E
-jumptable 5x	base:0x108	prefix:switch_handler_fwcode|a
+jumptable 5x	base:0x108	prefix:switch_on_oid_fwcode.6
 
 asm 0xFBA
-jumptable 75x	prefix:switch_on_penstate|a
+jumptable 75x	prefix:switch_on_penstate.6
 
 asm 0xDE8
-jumptable 34x	base:0x30	prefix:switch_handler_fwcode|m
+jumptable 34x	base:0x30	prefix:switch_on_button_fwcode.b
 
 asm 0x38
-jumptable 4x	base:0xc0	prefix:switch_handler_fwcode|m
+jumptable 4x	base:0xc0	prefix:switch_on_button_fwcode.b
 
 asm 0x38
-jumptable 22x	base:0x70	prefix:switch_handler_fwcode|m
+jumptable 22x	base:0x70	prefix:switch_on_button_fwcode.b
 
 asm 0x48
-jumptable 13x	base:0xe0	prefix:switch_handler_fwcode|m
+jumptable 13x	base:0xe0	prefix:switch_on_button_fwcode.b
 
 asm 0x882
-jumptable 48x	base:0xc0	prefix:switch_handler_fwcode|c
+jumptable 48x	base:0xc0	prefix:switch_on_oid_fwcode.b
 
 asm 0x38
-jumptable 34x	base:0x30	prefix:switch_handler_fwcode|c
+jumptable 34x	base:0x30	prefix:switch_on_oid_fwcode.b
 
 asm 0x70
-jumptable 22x	base:0x70	prefix:switch_handler_fwcode|c
+jumptable 22x	base:0x70	prefix:switch_on_oid_fwcode.b
 
 asm 0x72
-jumptable 22x	base:0xf01	prefix:switch_handler_fwcode|c
+jumptable 22x	base:0xf01	prefix:switch_on_oid_fwcode.b
 
 asm 0x3E
-jumptable 9x	base:0x400	prefix:switch_handler_fwcode|c
+jumptable 9x	base:0x400	prefix:switch_on_oid_fwcode.b
 
 asm 0x3E
-jumptable 5x	base:0x108	prefix:switch_handler_fwcode|c
+jumptable 5x	base:0x108	prefix:switch_on_oid_fwcode.b
 
 asm 0x1A70
-jumptable 75x	prefix:switch_on_penstate|b
+jumptable 75x	prefix:switch_on_penstate.b
 
 asm 0xCC2
 jumptable 13x	base:2
@@ -388,229 +388,229 @@ asm 0xDA
 jumptable 13x	base:2
 
 asm 0x640
-jumptable 34x	base:0x30	prefix:switch_handler_button_fwcode.1
+jumptable 34x	base:0x30	prefix:switch_on_button_fwcode.1
 
 asm 0x38
-jumptable 4x	base:0xc0	prefix:switch_handler_button_fwcode.1
+jumptable 4x	base:0xc0	prefix:switch_on_button_fwcode.1
 
 asm 0x38
-jumptable 22x	base:0x70	prefix:switch_handler_button_fwcode.1
+jumptable 22x	base:0x70	prefix:switch_on_button_fwcode.1
 
 asm 0x48
-jumptable 13x	base:0xe0	prefix:switch_handler_button_fwcode.1
+jumptable 13x	base:0xe0	prefix:switch_on_button_fwcode.1
 
 asm 0x57C
-jumptable 48x	base:0xc0	prefix:switch_handler_oid_fwcode.1
+jumptable 48x	base:0xc0	prefix:switch_on_oid_fwcode.1
 
 asm 0x38
-jumptable 34x	base:0x30	prefix:switch_handler_oid_fwcode.1
+jumptable 34x	base:0x30	prefix:switch_on_oid_fwcode.1
 
 asm 0x70
-jumptable 22x	base:0x70	prefix:switch_handler_oid_fwcode.1
+jumptable 22x	base:0x70	prefix:switch_on_oid_fwcode.1
 
 asm 0x72
-jumptable 22x	base:0xf01	prefix:switch_handler_oid_fwcode.1
+jumptable 22x	base:0xf01	prefix:switch_on_oid_fwcode.1
 
 asm 0x3E
-jumptable 9x	base:0x400	prefix:switch_handler_oid_fwcode.1
+jumptable 9x	base:0x400	prefix:switch_on_oid_fwcode.1
 
 asm 0x3E
-jumptable 5x	base:0x108	prefix:switch_handler_oid_fwcode.1
+jumptable 5x	base:0x108	prefix:switch_on_oid_fwcode.1
 
 asm 0x3E
-jumptable 4x	base:0x501	prefix:switch_handler_oid_fwcode.1
+jumptable 4x	base:0x501	prefix:switch_on_oid_fwcode.1
 
 asm 0x10D6
-jumptable 75x
+jumptable 75x	prefix:switch_on_penstate.1
 
 asm 0x119C
-jumptable 21x
+jumptable 21x	prefix:switch_on_quiz_state
 
 asm 0x2E5A
-jumptable 34x	base:0x30
+jumptable 34x	base:0x30	prefix:switch_on_button_fwcode.8
 
 asm 0x38
-jumptable 4x	base:0xc0
+jumptable 4x	base:0xc0	prefix:switch_on_button_fwcode.8
 
 asm 0x38
-jumptable 22x	base:0x70
+jumptable 22x	base:0x70	prefix:switch_on_button_fwcode.8
 
 asm 0x48
-jumptable 13x	base:0xe0
+jumptable 13x	base:0xe0	prefix:switch_on_button_fwcode.8
 
 asm 0x4AE
-jumptable 48x	base:0xc0
+jumptable 48x	base:0xc0	prefix:switch_on_oid_fwcode.8
 
 asm 0x38
-jumptable 34x	base:0x30
+jumptable 34x	base:0x30	prefix:switch_on_oid_fwcode.8
 
 asm 0x70
-jumptable 6x	base:0x80
+jumptable 6x	base:0x80	prefix:switch_on_oid_fwcode.8
 
 asm 0x72
-jumptable 22x	base:0xf01
+jumptable 22x	base:0xf01	prefix:switch_on_oid_fwcode.8
 
 asm 0x3E
-jumptable 9x	base:0x400
+jumptable 9x	base:0x400	prefix:switch_on_oid_fwcode.8
 
 asm 0x3E
-jumptable 5x	base:0x108
+jumptable 5x	base:0x108	prefix:switch_on_oid_fwcode.8
 
 asm 0xF3E
-jumptable 75x
+jumptable 75x	prefix:switch_on_penstate.8
 
 asm 0x10EC
-jumptable 34x	base:0x30
+jumptable 34x	base:0x30	prefix:switch_on_button_fwcode.2
 
 asm 0x38
-jumptable 4x	base:0xc0
+jumptable 4x	base:0xc0	prefix:switch_on_button_fwcode.2
 
 asm 0x38
-jumptable 22x	base:0x70
+jumptable 22x	base:0x70	prefix:switch_on_button_fwcode.2
 
 asm 0x48
-jumptable 13x	base:0xe0
+jumptable 13x	base:0xe0	prefix:switch_on_button_fwcode.2
 
 asm 0x6FE
-jumptable 48x	base:0xc0
+jumptable 48x	base:0xc0	prefix:switch_on_oid_fwcode.2
 
 asm 0x38
-jumptable 34x	base:0x30
+jumptable 34x	base:0x30	prefix:switch_on_oid_fwcode.2
 
 asm 0x70
-jumptable 6x	base:0x80
+jumptable 6x	base:0x80	prefix:switch_on_oid_fwcode.2
 
 asm 0x72
-jumptable 22x	base:0xf01
+jumptable 22x	base:0xf01	prefix:switch_on_oid_fwcode.2
 
 asm 0x3E
-jumptable 9x	base:0x400
+jumptable 9x	base:0x400	prefix:switch_on_oid_fwcode.2
 
 asm 0x3E
-jumptable 5x	base:0x108
+jumptable 5x	base:0x108	prefix:switch_on_oid_fwcode.2
 
 asm 0x10D8
-jumptable 75x
+jumptable 75x	prefix:switch_on_penstate.2
 
 asm 0xD82
-jumptable 34x	base:0x30
+jumptable 34x	base:0x30	prefix:switch_on_button_fwcode.9
 
 asm 0x38
-jumptable 4x	base:0xc0
+jumptable 4x	base:0xc0	prefix:switch_on_button_fwcode.9
 
 asm 0x38
-jumptable 22x	base:0x70
+jumptable 22x	base:0x70	prefix:switch_on_button_fwcode.9
 
 asm 0x48
-jumptable 13x	base:0xe0
+jumptable 13x	base:0xe0	prefix:switch_on_button_fwcode.9
 
 asm 0x4AE
-jumptable 48x	base:0xc0
+jumptable 48x	base:0xc0	prefix:switch_on_oid_fwcode.9
 
 asm 0x38
-jumptable 34x	base:0x30
+jumptable 34x	base:0x30	prefix:switch_on_oid_fwcode.9
 
 asm 0x70
-jumptable 6x	base:0x80
+jumptable 6x	base:0x80	prefix:switch_on_oid_fwcode.9
 
 asm 0x72
-jumptable 22x	base:0xf01
+jumptable 22x	base:0xf01	prefix:switch_on_oid_fwcode.9
 
 asm 0x3E
-jumptable 9x	base:0x400
+jumptable 9x	base:0x400	prefix:switch_on_oid_fwcode.9
 
 asm 0x3E
-jumptable 5x	base:0x108
+jumptable 5x	base:0x108	prefix:switch_on_oid_fwcode.9
 
 asm 0xD82
-jumptable 75x
+jumptable 75x	prefix:switch_on_penstate.9
 
 asm 0xB60
-jumptable 34x	base:0x30
+jumptable 34x	base:0x30	prefix:switch_on_button_fwcode.3
 
 asm 0x38
-jumptable 4x	base:0xc0
+jumptable 4x	base:0xc0	prefix:switch_on_button_fwcode.3
 
 asm 0x38
-jumptable 22x	base:0x70
+jumptable 22x	base:0x70	prefix:switch_on_button_fwcode.3
 
 asm 0x48
-jumptable 13x	base:0xe0
+jumptable 13x	base:0xe0	prefix:switch_on_button_fwcode.3
 
 asm 0x4CA
-jumptable 48x	base:0xc0
+jumptable 48x	base:0xc0	prefix:switch_on_oid_fwcode.3
 
 asm 0x38
-jumptable 34x	base:0x30
+jumptable 34x	base:0x30	prefix:switch_on_oid_fwcode.3
 
 asm 0x70
-jumptable 6x	base:0x80
+jumptable 6x	base:0x80	prefix:switch_on_oid_fwcode.3
 
 asm 0x72
-jumptable 22x	base:0xf01
+jumptable 22x	base:0xf01	prefix:switch_on_oid_fwcode.3
 
 asm 0x3E
-jumptable 9x	base:0x400
+jumptable 9x	base:0x400	prefix:switch_on_oid_fwcode.3
 
 asm 0x3E
-jumptable 5x	base:0x108
+jumptable 5x	base:0x108	prefix:switch_on_oid_fwcode.3
 
 asm 0xD82
-jumptable 75x
+jumptable 75x	prefix:switch_on_penstate.3
 
 asm 0x91A
-jumptable 48x	base:0xc0
+jumptable 48x	base:0xc0	prefix:switch_on_oid_fwcode.4
 
 asm 0x38
-jumptable 34x	base:0x30
+jumptable 34x	base:0x30	prefix:switch_on_oid_fwcode.4
 
 asm 0x70
-jumptable 6x	base:0x80
+jumptable 6x	base:0x80	prefix:switch_on_oid_fwcode.4
 
 asm 0x72
-jumptable 22x	base:0xf01
+jumptable 22x	base:0xf01	prefix:switch_on_oid_fwcode.4
 
 asm 0x3E
-jumptable 9x	base:0x400
+jumptable 9x	base:0x400	prefix:switch_on_oid_fwcode.4
 
 asm 0x3E
-jumptable 5x	base:0x108
+jumptable 5x	base:0x108	prefix:switch_on_oid_fwcode.4
 
 asm 0xCE2
-jumptable 34x	base:0x30
+jumptable 34x	base:0x30	prefix:switch_on_button_fwcode.4
 
 asm 0x38
-jumptable 4x	base:0xc0
+jumptable 4x	base:0xc0	prefix:switch_on_button_fwcode.4
 
 asm 0x38
-jumptable 22x	base:0x70
+jumptable 22x	base:0x70	prefix:switch_on_button_fwcode.4
 
 asm 0x48
-jumptable 13x	base:0xe0
+jumptable 13x	base:0xe0	prefix:switch_on_button_fwcode.4
 
 asm 0x8AA
-jumptable 75x
+jumptable 75x	prefix:switch_on_penstate.4
 
 asm 0x1DB8
-jumptable 48x	base:0xc0
+jumptable 48x	base:0xc0	prefix:switch_on_oid_fwcode.c
 
 asm 0x38
-jumptable 34x	base:0x30
+jumptable 34x	base:0x30	prefix:switch_on_oid_fwcode.c
 
 asm 0x70
-jumptable 22x	base:0x70
+jumptable 22x	base:0x70	prefix:switch_on_oid_fwcode.c
 
 asm 0x72
-jumptable 22x	base:0xf01
+jumptable 22x	base:0xf01	prefix:switch_on_oid_fwcode.c
 
 asm 0x3E
-jumptable 9x	base:0x400
+jumptable 9x	base:0x400	prefix:switch_on_oid_fwcode.c
 
 asm 0x3E
-jumptable 5x	base:0x108
+jumptable 5x	base:0x108	prefix:switch_on_oid_fwcode.c
 
 asm 0x112C
-jumptable 75x
+jumptable 75x	prefix:switch_on_penstate.c
 
 asm 0x474
 jumptable 5x
@@ -628,16 +628,16 @@ asm 0x4798
 jumptable 39x	base:0x1a
 
 asm 0xE48
-jumptable 34x	base:0x30
+jumptable 34x	base:0x30	prefix:switch_on_button_fwcode.c
 
 asm 0x38
-jumptable 4x	base:0xc0
+jumptable 4x	base:0xc0	prefix:switch_on_button_fwcode.c
 
 asm 0x38
-jumptable 22x	base:0x70
+jumptable 22x	base:0x70	prefix:switch_on_button_fwcode.c
 
 asm 0x48
-jumptable 13x	base:0xe0
+jumptable 13x	base:0xe0	prefix:switch_on_button_fwcode.c
 
 asm 0x47CA
 jumptable 4x
@@ -2577,27 +2577,27 @@ skip 0x2bf5e
 0x42762b	main_mode_leave.c
 0x42835f	main_mode_leave.d.noop
 
-0x40ed07	process_oid_fwcode.1(wOID)
-0x40e97a	process_button_fwcode.1(wOID)
-0x413022	process_oid_fwcode.2(wOID)
-0x412bc7	process_button_fwcode.2(wOID)
-0x4154eb	process_oid_fwcode.3(wOID)
-0x4151aa	process_button_fwcode.3(wOID)
-0x4161ca	process_oid_fwcode.4(wOID)
-0x41694c	process_button_fwcode.4(wOID)
-#no OID/button in main_mode 5(wOID)
-0x40bb8e	process_oid_fwcode.6(wOID)
-0x40b85b	process_button_fwcode.6(wOID)
+0x40ed07	process_oid_fwcode.1(wCode)
+0x40e97a	process_button_fwcode.1(wCode)
+0x413022	process_oid_fwcode.2(wCode)
+0x412bc7	process_button_fwcode.2(wCode)
+0x4154eb	process_oid_fwcode.3(wCode)
+0x4151aa	process_button_fwcode.3(wCode)
+0x4161ca	process_oid_fwcode.4(wCode)
+0x41694c	process_button_fwcode.4(wCode)
+#no OID/button in main_mode 5(wCode)
+0x40bb8e	process_oid_fwcode.6(wCode)
+0x40b85b	process_button_fwcode.6(wCode)
 #main_mode 7 doesn't exist
-0x4129f9	process_oid_fwcode.8(wOID)
-0x411725	process_button_fwcode.8(wOID)
-0x4143de	process_oid_fwcode.9(wOID)
-0x4140ab	process_button_fwcode.9(wOID)
+0x411a58	process_oid_fwcode.8(wCode)
+0x411725	process_button_fwcode.8(wCode)
+0x4143de	process_oid_fwcode.9(wCode)
+0x4140ab	process_button_fwcode.9(wCode)
 #no OID/button in main_mode a
-0x40d0d6	process_oid_fwcode.b(wOID)
-0x40cbb9	process_button_fwcode.b(wOID)
-0x417da3	process_oid_fwcode.c(wOID)
-0x41cb3f	process_button_fwcode.c(wOID)
+0x40d0d6	process_oid_fwcode.b(wCode)
+0x40cbb9	process_button_fwcode.b(wCode)
+0x417da3	process_oid_fwcode.c(wCode)
+0x41cb3f	process_button_fwcode.c(wCode)
 #mode d is no-op
 
 0x40f6ee	main_mode_action.1()
@@ -2713,732 +2713,131 @@ skip 0x2bf5e
 0x429e9a	dbgstring_pFilePath=%s
 0x429eae	dbgstring_TxtNum:%d
 
-#0x400184	some_indirectly_called_function_400184
-#0x400209	some_indirectly_called_function_400209
-#0x4100dd	some_indirectly_called_function_4100dd
-#0x41140c	some_indirectly_called_function_41140c
-#0x411556	some_indirectly_called_function_411556
-#0x4172a9	some_indirectly_called_function_4172a9
-#0x4172c2	some_indirectly_called_function_4172c2
-#0x417319	some_indirectly_called_function_417319
-#0x417332	some_indirectly_called_function_417332
-#0x417370	some_indirectly_called_function_417370
-#0x417389	some_indirectly_called_function_417389
-#0x417482	some_indirectly_called_function_417482
-#0x4174d1	some_indirectly_called_function_4174d1
-#0x4174ea	some_indirectly_called_function_4174ea
-#0x417503	some_indirectly_called_function_417503
-#0x417546	some_indirectly_called_function_417546
-#0x41755f	some_indirectly_called_function_41755f
-#0x41758f	some_indirectly_called_function_41758f
-#0x4175a8	some_indirectly_called_function_4175a8
-#0x4175d1	some_indirectly_called_function_4175d1
-#0x417632	some_indirectly_called_function_417632
-#0x417680	some_indirectly_called_function_417680
-#0x4176c5	some_indirectly_called_function_4176c5
-#0x417703	some_indirectly_called_function_417703
-#0x41772a	some_indirectly_called_function_41772a
-#0x417760	some_indirectly_called_function_417760
-#0x4177a0	some_indirectly_called_function_4177a0
-#0x4177c7	some_indirectly_called_function_4177c7
-#0x4177ee	some_indirectly_called_function_4177ee
 0x417869	some_indirectly_called_function_417869
-#0x417882	some_indirectly_called_function_417882
-#0x4178a0	some_indirectly_called_function_4178a0
-#0x4178b9	some_indirectly_called_function_4178b9
-#0x417902	some_indirectly_called_function_417902
-#0x417950	some_indirectly_called_function_417950
-#0x417995	some_indirectly_called_function_417995
-#0x4179ea	some_indirectly_called_function_4179ea
-#0x417a3a	some_indirectly_called_function_417a3a
-#0x417a53	some_indirectly_called_function_417a53
-#0x417a71	some_indirectly_called_function_417a71
-#0x417a9c	some_indirectly_called_function_417a9c
-#0x417ac5	some_indirectly_called_function_417ac5
-#0x417af1	some_indirectly_called_function_417af1
-#0x417b18	some_indirectly_called_function_417b18
-#0x417b3f	some_indirectly_called_function_417b3f
-#0x417b66	some_indirectly_called_function_417b66
-#0x417bce	some_indirectly_called_function_417bce
-#0x417be7	some_indirectly_called_function_417be7
-#0x417c05	some_indirectly_called_function_417c05
-#0x417c1e	some_indirectly_called_function_417c1e
-#0x417c64	some_indirectly_called_function_417c64
-#0x417c8b	some_indirectly_called_function_417c8b
-#0x417cb2	some_indirectly_called_function_417cb2
-#0x417cd9	some_indirectly_called_function_417cd9
-#0x417d00	some_indirectly_called_function_417d00
-#0x417d34	some_indirectly_called_function_417d34
-#0x417d4d	some_indirectly_called_function_417d4d
-#0x417d74	some_indirectly_called_function_417d74
-#0x418fb6	some_indirectly_called_function_418fb6
-#0x418fe5	some_indirectly_called_function_418fe5
-#0x418ffe	some_indirectly_called_function_418ffe
-#0x419025	some_indirectly_called_function_419025
-#0x41904c	some_indirectly_called_function_41904c
-#0x4190cb	some_indirectly_called_function_4190cb
-#0x41912a	some_indirectly_called_function_41912a
-#0x419151	some_indirectly_called_function_419151
-#0x419184	some_indirectly_called_function_419184
-#0x419222	some_indirectly_called_function_419222
-#0x41923b	some_indirectly_called_function_41923b
 0x4192bd	some_indirectly_called_function_4192bd
-#0x4192d6	some_indirectly_called_function_4192d6
 0x419340	some_indirectly_called_function_419340
-#0x419359	some_indirectly_called_function_419359
 0x4193cb	some_indirectly_called_function_4193cb
-#0x4193e4	some_indirectly_called_function_4193e4
 0x419456	some_indirectly_called_function_419456
-#0x41946f	some_indirectly_called_function_41946f
 0x4194ca	some_indirectly_called_function_4194ca
-#0x4194e3	some_indirectly_called_function_4194e3
 0x419555	some_indirectly_called_function_419555
-#0x41956e	some_indirectly_called_function_41956e
 0x4195c9	some_indirectly_called_function_4195c9
-#0x4195e2	some_indirectly_called_function_4195e2
-#0x419648	some_indirectly_called_function_419648
-#0x419662	some_indirectly_called_function_419662
-#0x419683	some_indirectly_called_function_419683
-#0x41969b	some_indirectly_called_function_41969b
-#0x4196df	some_indirectly_called_function_4196df
-#0x4196f7	some_indirectly_called_function_4196f7
-#0x419752	some_indirectly_called_function_419752
-#0x41976c	some_indirectly_called_function_41976c
-#0x41978d	some_indirectly_called_function_41978d
-#0x4197a5	some_indirectly_called_function_4197a5
-#0x4197ee	some_indirectly_called_function_4197ee
-#0x419806	some_indirectly_called_function_419806
-#0x419866	some_indirectly_called_function_419866
-#0x41987e	some_indirectly_called_function_41987e
-#0x4198c2	some_indirectly_called_function_4198c2
-#0x4198da	some_indirectly_called_function_4198da
-#0x419a76	some_indirectly_called_function_419a76
-#0x419a8e	some_indirectly_called_function_419a8e
-#0x419ad4	some_indirectly_called_function_419ad4
-#0x419aec	some_indirectly_called_function_419aec
-#0x41b3aa	some_indirectly_called_function_41b3aa
-#0x41b3c3	some_indirectly_called_function_41b3c3
-#0x41b3dc	some_indirectly_called_function_41b3dc
-#0x41b3f9	some_indirectly_called_function_41b3f9
-#0x41b420	some_indirectly_called_function_41b420
-#0x41b447	some_indirectly_called_function_41b447
-#0x41b46e	some_indirectly_called_function_41b46e
-#0x41b4b7	some_indirectly_called_function_41b4b7
 0x41b539	some_indirectly_called_function_41b539
-#0x41b552	some_indirectly_called_function_41b552
 0x41b5ad	some_indirectly_called_function_41b5ad
-#0x41b5c6	some_indirectly_called_function_41b5c6
 0x41b621	some_indirectly_called_function_41b621
-#0x41b63a	some_indirectly_called_function_41b63a
 0x41b695	some_indirectly_called_function_41b695
-#0x41b6ae	some_indirectly_called_function_41b6ae
 0x41b709	some_indirectly_called_function_41b709
-#0x41b722	some_indirectly_called_function_41b722
 0x41b77d	some_indirectly_called_function_41b77d
-#0x41b796	some_indirectly_called_function_41b796
 0x41b7f1	some_indirectly_called_function_41b7f1
-#0x41b80a	some_indirectly_called_function_41b80a
-#0x41b868	some_indirectly_called_function_41b868
-#0x41b880	some_indirectly_called_function_41b880
-#0x41b8a6	some_indirectly_called_function_41b8a6
-#0x41b8be	some_indirectly_called_function_41b8be
-#0x41b93c	some_indirectly_called_function_41b93c
-#0x41b954	some_indirectly_called_function_41b954
-#0x41ba1b	some_indirectly_called_function_41ba1b
-#0x41ba6f	some_indirectly_called_function_41ba6f
-#0x41bac3	some_indirectly_called_function_41bac3
-#0x41bb17	some_indirectly_called_function_41bb17
-#0x41bc28	some_indirectly_called_function_41bc28
-#0x41bc40	some_indirectly_called_function_41bc40
-#0x41bcaf	some_indirectly_called_function_41bcaf
-#0x41bcc8	some_indirectly_called_function_41bcc8
-#0x41bd27	some_indirectly_called_function_41bd27
-#0x41bd40	some_indirectly_called_function_41bd40
-#0x41bd79	some_indirectly_called_function_41bd79
-#0x41bd92	some_indirectly_called_function_41bd92
-#0x41bdd3	some_indirectly_called_function_41bdd3
-#0x41bdec	some_indirectly_called_function_41bdec
-#0x41be45	some_indirectly_called_function_41be45
-#0x41be5e	some_indirectly_called_function_41be5e
-#0x41bf28	some_indirectly_called_function_41bf28
-#0x41bf41	some_indirectly_called_function_41bf41
-#0x41bf85	some_indirectly_called_function_41bf85
-#0x41bf9e	some_indirectly_called_function_41bf9e
-#0x41bfe9	some_indirectly_called_function_41bfe9
-#0x41c002	some_indirectly_called_function_41c002
-#0x41d7a4	some_indirectly_called_function_41d7a4
-#0x41f1aa	some_indirectly_called_function_41f1aa
-#0x41f1c5	some_indirectly_called_function_41f1c5
-#0x41f227	some_indirectly_called_function_41f227
-#0x41f242	some_indirectly_called_function_41f242
-#0x41f26b	some_indirectly_called_function_41f26b
-#0x41f2c2	some_indirectly_called_function_41f2c2
-#0x41f2e5	some_indirectly_called_function_41f2e5
-#0x41f300	some_indirectly_called_function_41f300
-#0x41f329	some_indirectly_called_function_41f329
-#0x41f369	some_indirectly_called_function_41f369
-#0x41f7d2	some_indirectly_called_function_41f7d2
-#0x41f7eb	some_indirectly_called_function_41f7eb
-#0x41f844	some_indirectly_called_function_41f844
-#0x41fd27	some_indirectly_called_function_41fd27
-#0x41fd3f	some_indirectly_called_function_41fd3f
-#0x41fd99	some_indirectly_called_function_41fd99
-#0x41fdb1	some_indirectly_called_function_41fdb1
-#0x41fde4	some_indirectly_called_function_41fde4
-#0x41fe06	some_indirectly_called_function_41fe06
-#0x41fe34	some_indirectly_called_function_41fe34
-#0x41fe66	some_indirectly_called_function_41fe66
-#0x41fe88	some_indirectly_called_function_41fe88
-#0x41fea9	some_indirectly_called_function_41fea9
-#0x420c97	some_indirectly_called_function_420c97
-#0x420cb0	some_indirectly_called_function_420cb0
-#0x420cec	some_indirectly_called_function_420cec
-#0x420d05	some_indirectly_called_function_420d05
-#0x420d48	some_indirectly_called_function_420d48
-#0x420d61	some_indirectly_called_function_420d61
-#0x420fc1	some_indirectly_called_function_420fc1
-#0x420fda	some_indirectly_called_function_420fda
-#0x42102f	some_indirectly_called_function_42102f
-#0x421048	some_indirectly_called_function_421048
-#0x4213c0	some_indirectly_called_function_4213c0
-#0x4213d9	some_indirectly_called_function_4213d9
-#0x4213f2	some_indirectly_called_function_4213f2
-#0x42140b	some_indirectly_called_function_42140b
-#0x421467	some_indirectly_called_function_421467
-#0x4214ac	some_indirectly_called_function_4214ac
-#0x4214d3	some_indirectly_called_function_4214d3
-#0x421521	some_indirectly_called_function_421521
-#0x42153a	some_indirectly_called_function_42153a
-#0x421597	some_indirectly_called_function_421597
-#0x4215b0	some_indirectly_called_function_4215b0
-#0x42160c	some_indirectly_called_function_42160c
-#0x421625	some_indirectly_called_function_421625
-#0x4217bc	some_indirectly_called_function_4217bc
-#0x4217d5	some_indirectly_called_function_4217d5
-#0x421825	some_indirectly_called_function_421825
-#0x42183e	some_indirectly_called_function_42183e
-#0x4218af	some_indirectly_called_function_4218af
-#0x4218d9	some_indirectly_called_function_4218d9
-#0x421bb3	some_indirectly_called_function_421bb3 
-#0x421bcd	some_indirectly_called_function_421bcd
-#0x421bf4	some_indirectly_called_function_421bf4
-#0x421c0c	some_indirectly_called_function_421c0c
-#0x421c76	some_indirectly_called_function_421c76
-#0x421c8e	some_indirectly_called_function_421c8e
-#0x421e36	some_indirectly_called_function_421e36
-#0x421e50	some_indirectly_called_function_421e50
-#0x421e77	some_indirectly_called_function_421e77
-#0x421e8f	some_indirectly_called_function_421e8f
-#0x421ef9	some_indirectly_called_function_421ef9
-#0x421f11	some_indirectly_called_function_421f11
-#0x4220aa	some_indirectly_called_function_4220aa
-#0x4220c3	some_indirectly_called_function_4220c3
-#0x42212f	some_indirectly_called_function_42212f
-#0x422148	some_indirectly_called_function_422148
-#0x422185	some_indirectly_called_function_422185
-#0x42219e	some_indirectly_called_function_42219e
-#0x422993	some_indirectly_called_function_422993
-#0x4229ac	some_indirectly_called_function_4229ac
-#0x422da4	some_indirectly_called_function_422da4
-#0x422dbc	some_indirectly_called_function_422dbc
-#0x422e12	some_indirectly_called_function_422e12
-#0x422e2c	some_indirectly_called_function_422e2c
-#0x422e56	some_indirectly_called_function_422e56
-#0x423a0a	some_indirectly_called_function_423a0a
-#0x423a81	some_indirectly_called_function_423a81
-#0x423d96	some_indirectly_called_function_423d96
-#0x423daf	some_indirectly_called_function_423daf
-#0x423e26	some_indirectly_called_function_423e26
-#0x423e6c	some_indirectly_called_function_423e6c
-#0x423ed9	some_indirectly_called_function_423ed9
-#0x424025	some_indirectly_called_function_424025
-#0x42403e	some_indirectly_called_function_42403e
-#0x4240f8	some_indirectly_called_function_4240f8
-#0x424111	some_indirectly_called_function_424111
-#0x4241ca	some_indirectly_called_function_4241ca
-#0x42420a	some_indirectly_called_function_42420a
-#0x4247eb	some_indirectly_called_function_4247eb
-#0x424845	some_indirectly_called_function_424845
-#0x424e60	some_indirectly_called_function_424e60
-#0x424e79	some_indirectly_called_function_424e79
-#0x4253fe	some_indirectly_called_function_4253fe
-#0x4255df	some_indirectly_called_function_4255df
-#0x4259c2	some_indirectly_called_function_4259c2
-#0x4259db	some_indirectly_called_function_4259db
-#0x425a3a	some_indirectly_called_function_425a3a
-#0x425a53	some_indirectly_called_function_425a53
-#0x425bd9	some_indirectly_called_function_425bd9
-#0x425c93	some_indirectly_called_function_425c93
-#0x425caf	some_indirectly_called_function_425caf
 0x42650d	some_indirectly_called_function_42650d
 0x426526	some_indirectly_called_function_426526
 0x42653d	some_indirectly_called_function_42653d
-#0x426575	some_indirectly_called_function_426575
-#0x42658e	some_indirectly_called_function_42658e
-#0x426877	some_indirectly_called_function_426877
-#0x426890	some_indirectly_called_function_426890
 0x426b1f	some_indirectly_called_function_426b1f
-#0x426b7e	some_indirectly_called_function_426b7e
-#0x426b97	some_indirectly_called_function_426b97
-#0x426c20	some_indirectly_called_function_426c20
-#0x426c39	some_indirectly_called_function_426c39
-#0x426da3	some_indirectly_called_function_426da3
-#0x426dbc	some_indirectly_called_function_426dbc
-#0x427453	some_indirectly_called_function_427453
-#0x427467	some_indirectly_called_function_427467
 
-#0x40bb8e	Switch_over_FWcodes_large_on_c0|a
+0x40bb5a	handler_button_fwcode.6_other
+0x40bb66	handler_button_fwcode.6_90_to_af_modes
+0x40bb78	end_of_button_fwcode_handling.6
 
-#0x40be44	switch_handler_fwcode_c0_unk|a
-#0x40be4c	switch_handler_fwcode_c1_unk|a
-#0x40be54	switch_handler_fwcode_c2_unk|a
-#0x40be58	switch_handler_fwcode_c3_unk|a
-#0x40be5c	switch_handler_fwcode_c4_unk|a
-#0x40c10d	switch_handler_fwcode_MULTI_unk|a
-#0x40be73	switch_handler_fwcode_cc_unk|a
-#0x40be77	switch_handler_fwcode_cd_unk|a
-#0x40be7b	switch_handler_fwcode_da_unk|a
-#0x40bea0	switch_handler_fwcode_db_unk|a
-#0x40bec5	switch_handler_fwcode_dc_unk|a
-#0x40bee1	switch_handler_fwcode_dd_unk|a
-#0x40befd	switch_handler_fwcode_de_unk|a
-#0x40bf19	switch_handler_fwcode_e0_unk|a
-#0x40bf1d	switch_handler_fwcode_e1_unk|a
-#0x40bf21	switch_handler_fwcode_e2_unk|a
-#0x40bf42	switch_handler_fwcode_e3_unk|a
-#0x40bf3e	switch_handler_fwcode_e4_unk|a
-#0x40bf5f	switch_handler_fwcode_e5_unk|a
-#0x40bf7c	switch_handler_fwcode_e6_unk|a
-#0x40bff6	switch_handler_fwcode_e7_unk|a
-#0x40bf9a	switch_handler_fwcode_e8_unk|a
-#0x40bfb1	switch_handler_fwcode_e9_unk|a
-#0x40bfc8	switch_handler_fwcode_ea_unk|a
-#0x40bfdf	switch_handler_fwcode_eb_unk|a
-#0x40c004	switch_handler_fwcode_ec_unk|a
-#0x40c015	switch_handler_fwcode_ed_unk|a
-#0x40c019	switch_handler_fwcode_ee_unk|a
-#0x40bffa	switch_handler_fwcode_ef_unk|a
+0x40bd75	switch_handler_oid_fwcode.6_30_volplus
+0x40bd83	switch_handler_oid_fwcode.6_31_volminus 
+0x40bd9d	switch_handler_oid_fwcode.6_40_mp3
+0x40bda9	switch_handler_oid_fwcode.6_42_mp3_pause
+0x40bdad	switch_handler_oid_fwcode.6_43_mp3_play 
+0x40bdb1	switch_handler_oid_fwcode.6_44_mp3_stop 
+0x40bdb5	switch_handler_oid_fwcode.6_45_mp3_next 
+0x40bdb9	switch_handler_oid_fwcode.6_46_mp3_prev 
+0x40bde8	switch_handler_oid_fwcode.6_50_compare
+0x40bd4c	handler_oid_fwcode.6_00
+0x40bd59	handler_oid_fwcode.6_10_bookid
+0x40bd69	handler_oid_fwcode.6_11
+0x40bd71	handler_oid_fwcode.6_12
+0x40be0c	switch_handler_oid_fwcode.6_80_stop
+#0x40bc5f	Switch_on_60_to_62
+0x40bdf8	handler_oid_fwcode.6_60
+0x40be00	handler_oid_fwcode.6_61
+0x40be04	handler_oid_fwcode.6_62
+0x40be3c	handler_oid_fwcode.6_b0
+#0x40bc79	Switch_on_f01_to_f16
+#0x40bcae	Switch_on_400_to_408
+#0x40bcd6	Switch_on_108_to_10c
+#0x40bcfa	Switch_on_501_to_504
+#0x40bd0f	Switch_on_2000_and_above
+#0x40bd3d	Switch_on_7000_and_above
+0x40c0e2	handler_oid_fwcode.6_501
+0x40c0f4	handler_oid_fwcode.6_502
+0x40c106	handler_oid_fwcode.6_404_to_408
+0x40bd50	handler_oid_fwcode.6_504
+0x40c086	handler_oid_fwcode.6_201d
+0x40c08a	handler_oid_fwcode.6_2020
+0x40c05f	handler_oid_fwcode.6_2000
+0x40c07e	handler_oid_fwcode.6_2001
+0x40c082	handler_oid_fwcode.6_2002
+0x40c08e	handler_oid_fwcode.6_7000
+0x40c092	handler_oid_fwcode.6_7001
+0x40c10d	handler_oid_fwcode.6_other_and_ranges
+0x40c35f	end_of_oid_fwcode_handling.6
 
-0x40bbe3	Switch_on_30_to_51|a
-
-0x40bd75	switch_handler_fwcode_30_volplus|a
-0x40bd83	switch_handler_fwcode_31_volminus|a 
-#0x40bd91	switch_handler_fwcode_32_unk|a
-#0x40bd97	switch_handler_fwcode_33_unk|a
-0x40bd9d	switch_handler_fwcode_40_mp3|a
-#0x40bda5	switch_handler_fwcode_41_unk|a
-0x40bda9	switch_handler_fwcode_42_mp3_pause|a
-0x40bdad	switch_handler_fwcode_43_mp3_play|a 
-0x40bdb1	switch_handler_fwcode_44_mp3_stop|a 
-0x40bdb5	switch_handler_fwcode_45_mp3_next|a 
-0x40bdb9	switch_handler_fwcode_46_mp3_prev|a 
-#0x40bdbd	switch_handler_fwcode_47_unk|a
-#0x40bdc1	switch_handler_fwcode_48_unk|a
-#0x40bdc5	switch_handler_fwcode_49_unk|a
-#0x40bdc9	switch_handler_fwcode_4a_unk|a
-#0x40bdcd	switch_handler_fwcode_4b_unk|a
-#0x40bdd1	switch_handler_fwcode_4c_unk|a
-0x40bde8	switch_handler_fwcode_50_compare|a
-#0x40bdf0	switch_handler_fwcode_51_unk|a
-
-0x40bc21	Switch_on_00_to_12|a
-0x40bd4c	handler_fwcode_00_unk|a
-0x40bd59	handler_fwcode_10_bookid|a
-0x40bd69	handler_fwcode_11_unk|a
-0x40bd71	handler_fwcode_12_unk|a
-
-0x40be0c	switch_handler_fwcode_80_stop|a
-#0x40be14	switch_handler_fwcode_81_unk|a
-#0x40be1c	switch_handler_fwcode_82_unk|a
-#0x40be24	switch_handler_fwcode_83_unk|a
-#0x40be2c	switch_handler_fwcode_84_unk|a
-#0x40be34	switch_handler_fwcode_85_unk|a
-
-0x40bc5f	Switch_on_60_to_62|a
-0x40bdf8	handler_fwcode_60_unk|a
-0x40be00	handler_fwcode_61_unk|a
-0x40be04	handler_fwcode_62_unk|a
-0x40be3c	handler_fwcode_b0_unk|a
-
-0x40bc79	Switch_on_f01_to_f16|a
-#0x40c01d	switch_handler_fwcode_f01_unk|a
-#0x40c021	switch_handler_fwcode_f0c_unk|a
-#0x40c025	switch_handler_fwcode_f0d_unk|a
-#0x40c029	switch_handler_fwcode_f0e_unk|a
-#0x40c02d	switch_handler_fwcode_f0f_unk|a
-#0x40c043	switch_handler_fwcode_f10_unk|a
-#0x40c047	switch_handler_fwcode_f11_unk|a
-#0x40c04b	switch_handler_fwcode_f12_unk|a
-#0x40c04f	switch_handler_fwcode_f13_unk|a
-#0x40c053	switch_handler_fwcode_f14_unk|a
-#0x40c057	switch_handler_fwcode_f15_unk|a
-#0x40c05b	switch_handler_fwcode_f16_unk|a
-
-0x40bcae	Switch_on_400_to_408|a
-#0x40c0a6	switch_handler_fwcode_400_unk|a
-#0x40c0b6	switch_handler_fwcode_401_unk|a
-#0x40c0ba	switch_handler_fwcode_402_unk|a
-#0x40c096	switch_handler_fwcode_403_unk|a
-#0x40c106	switch_handler_fwcode_404_to_408_unk|a
-
-0x40bcd6	Switch_on_108_to_10c|a
-#0x40c0be	switch_handler_fwcode_108_unk
-#0x40c0d2	switch_handler_fwcode_109_unk
-#0x40c0d6	switch_handler_fwcode_10a_unk
-#0x40c0da	switch_handler_fwcode_10b_unk
-#0x40c0de	switch_handler_fwcode_10c_unk
-
-0x40bcfa	Switch_on_501_to_504|a
-0x40c0e2	handler_fwcode_501_unk|a
-0x40c0f4	handler_fwcode_502_unk|a
-0x40bd50	handler_fwcode_504_unk|a
-
-0x40bd0f	Switch_on_2000_and_above|a
-0x40c086	handler_fwcode_201d_unk|a
-0x40c35f	end_of_fwcode_handling|a
-0x40c08a	handler_fwcode_2020_unk|a
-0x40bd3d	Switch_on_7000_and_above|a
-0x40c05f	handler_fwcode_2000_unk|a
-0x40c07e	handler_fwcode_2001_unk|a
-0x40c082	handler_fwcode_2002_unk|a
-0x40c08e	handler_fwcode_7000_unk|a
-0x40c092	handler_fwcode_7001_unk|a
-
-
-#0x40c528	switch_on_penstate_01_unk|a
-#0x40c52e	switch_on_penstate_02_unk|a
-#0x40c534	switch_on_penstate_03_unk|a
-#0x40c6db	switch_on_penstate_04_unk|a
-#0x40c53a	switch_on_penstate_05_unk|a
-#0x40c540	switch_on_penstate_06_unk|a
-#0x40c546	switch_on_penstate_08_unk|a
-#0x40c560	switch_on_penstate_09_unk|a
-#0x40c57b	switch_on_penstate_0a_unk|a
-#0x40c580	switch_on_penstate_0b_unk|a
-#0x40c586	switch_on_penstate_0c_unk|a
-#0x40c58c	switch_on_penstate_0d_unk|a
-#0x40c592	switch_on_penstate_0e_unk|a
-#0x40c598	switch_on_penstate_0f_unk|a
-#0x40c59e	switch_on_penstate_10_unk|a
-#0x40c5a4	switch_on_penstate_11_unk|a
-#0x40c5aa	switch_on_penstate_12_unk|a
-#0x40c5b0	switch_on_penstate_13_unk|a
-#0x40c5b6	switch_on_penstate_14_unk|a
-#0x40c5bc	switch_on_penstate_15_unk|a
-#0x40c5c2	switch_on_penstate_16_unk|a
-#0x40c5c8	switch_on_penstate_17_unk|a
-#0x40c5ce	switch_on_penstate_18_unk|a
-#0x40c5e7	switch_on_penstate_19_unk|a
-#0x40c5ed	switch_on_penstate_1a_unk|a
-#0x40c5f3	switch_on_penstate_1b_unk|a
-#0x40c5f9	switch_on_penstate_1c_unk|a
-#0x40c5ff	switch_on_penstate_1d_unk|a
-#0x40c605	switch_on_penstate_1e_unk|a
-#0x40c60a	switch_on_penstate_1f_unk|a
-#0x40c60f	switch_on_penstate_20_unk|a
-#0x40c614	switch_on_penstate_21_unk|a
-#0x40c61a	switch_on_penstate_22_unk|a
-#0x40c620	switch_on_penstate_23_unk|a
-#0x40c626	switch_on_penstate_24_unk|a
-#0x40c62d	switch_on_penstate_25_unk|a
-#0x40c633	switch_on_penstate_26_unk|a
-#0x40c639	switch_on_penstate_27_unk|a
-#0x40c63f	switch_on_penstate_28_unk|a
-#0x40c645	switch_on_penstate_29_unk|a
-#0x40c64b	switch_on_penstate_2a_unk|a
-#0x40c650	switch_on_penstate_2b_unk|a
-#0x40c655	switch_on_penstate_2c_unk|a
-#0x40c65a	switch_on_penstate_2d_unk|a
-#0x40c660	switch_on_penstate_2e_unk|a
-#0x40c666	switch_on_penstate_2f_unk|a
-#0x40c66c	switch_on_penstate_30_unk|a
-#0x40c672	switch_on_penstate_31_unk|a
-#0x40c678	switch_on_penstate_32_unk|a
-0x40c6de	default_on_penstate_processing|a
-#0x40c67e	switch_on_penstate_34_unk|a
-#0x40c684	switch_on_penstate_35_unk|a
-#0x40c68a	switch_on_penstate_36_unk|a
-#0x40c690	switch_on_penstate_37_unk|a
-#0x40c695	switch_on_penstate_38_unk|a
-#0x40c69a	switch_on_penstate_39_unk|a
-#0x40c69f	switch_on_penstate_3a_unk|a
-#0x40c6a4	switch_on_penstate_3b_unk|a
-#0x40c6a9	switch_on_penstate_3c_unk|a
-#0x40c6ae	switch_on_penstate_3d_unk|a
-#0x40c6b3	switch_on_penstate_3e_unk|a
-#0x40c6b8	switch_on_penstate_3f_unk|a
-#0x40c6bd	switch_on_penstate_40_unk|a
-#0x40c6c3	switch_on_penstate_41_unk|a
-#0x40c6c8	switch_on_penstate_42_unk|a
-#0x40c6cd	switch_on_penstate_43_unk|a
-#0x40c522	switch_on_penstate_44_unk|a
-#0x40c6d2	switch_on_penstate_4a_unk|a
+0x40c6db	default_on_penstate_handling.6
+0x40c6de	end_of_penstate_handling.6
 
 #0x40cbb9	switch_over_fwcodes_stk(fwcode)
-0x40cf1d	handler_fwcode_60_unk|m
-0x40cf25	handler_fwcode_61_unk|m
-0x40cf29	handler_fwcode_62_unk|m
-0x40cccf	handler_fwcode_10_bookid|m
-0x40ccc3	handler_fwcode_11_unk|m
+0x40cf1d	handler_button_fwcode.b_60
+0x40cf25	handler_button_fwcode.b_61
+0x40cf29	handler_button_fwcode.b_62
+0x40cccf	handler_button_fwcode.b_10_or_20_shutdown
+0x40ccc3	handler_button_fwcode.b_11
+0x40cc38	switch_on_button_fwcode.b_c0_to_c3
+0x40cc58	switch_on_button_fwcode.b_70_to_85
+0x40cc8a	switch_on_button_fwcode.b_e0_to_ec
+0x40cccb	handler_button_fwcode.b_ff
+0x40d0a2	handler_button_fwcode.b_other
+0x40d0ae	handler_button_fwcode.b_90_to_af_modes
+0x40d0c0	end_of_button_fwcode_handling.b
 
-#0x40ccda	switch_handler_fwcode_30_unk|m
-#0x40cce8	switch_handler_fwcode_31_unk|m
-#0x40ccf6	switch_handler_fwcode_32_unk|m
-#0x40ccfc	switch_handler_fwcode_33_unk|m
-#0x40d0a2	switch_handler_fwcode_unk_MULTI|m
-#0x40cd02	switch_handler_fwcode_40_unk|m
-#0x40cd0a	switch_handler_fwcode_41_unk|m
-#0x40cd88	switch_handler_fwcode_42_unk|m
-#0x40cd92	switch_handler_fwcode_43_unk|m
-#0x40ce12	switch_handler_fwcode_44_unk|m
-#0x40ce16	switch_handler_fwcode_45_unk|m
-#0x40ce82	switch_handler_fwcode_46_unk|m
-#0x40ceee	switch_handler_fwcode_47_unk|m
-#0x40cef6	switch_handler_fwcode_48_unk|m
-#0x40cefc	switch_handler_fwcode_49_unk|m
-#0x40cf02	switch_handler_fwcode_4a_unk|m
-#0x40cf07	switch_handler_fwcode_4b_unk|m
-#0x40cf0d	switch_handler_fwcode_50_unk|m
-#0x40cf15	switch_handler_fwcode_51_unk|m
+0x40d2ce	switch_handler_oid_fwcode.b_30_volplus
+0x40d2dc	switch_handler_oid_fwcode.b_31_volminus
+0x40d2f6	switch_handler_oid_fwcode.b_40_mp3
+0x40d37e	switch_handler_oid_fwcode.b_42_mp3_pause
+0x40d388	switch_handler_oid_fwcode.b_43_mp3_play
+0x40d408	switch_handler_oid_fwcode.b_44_mp3_stop
+0x40d40c	switch_handler_oid_fwcode.b_45_mp3_next
+0x40d478	switch_handler_oid_fwcode.b_46_mp3_prev
+0x40d516	switch_handler_oid_fwcode.b_50_compare
+0x40d2a5	handler_oid_fwcode.b_00
+0x40d2b2	handler_oid_fwcode.b_10_bookid
+0x40d2c2	handler_oid_fwcode.b_11
+0x40d2ca	handler_oid_fwcode.b_12
+0x40d573	switch_handler_oid_fwcode.b_80_stop
+0x40d526	handler_oid_fwcode.b_60
+0x40d52e	handler_oid_fwcode.b_61
+0x40d532	handler_oid_fwcode.b_62
+0x40d5a3	handler_oid_fwcode.b_b0
+0x40d7ea	handler_oid_fwcode.b_501
+0x40d7fc	handler_oid_fwcode.b_502
+0x40d2a9	handler_oid_fwcode.b_504
+0x40d78e	handler_oid_fwcode.b_201d
+0x40d296	handler_oid_fwcode.b_2020
+0x40d767	handler_oid_fwcode.b_2000
+0x40d786	handler_oid_fwcode.b_2001
+0x40d78a	handler_oid_fwcode.b_2002
+0x40d796	handler_oid_fwcode.b_7000
+0x40d79a	handler_oid_fwcode.b_7001
+0x40d815	switch_on_oid_fwcode.b_other_and_ranges
+0x40da5e	end_of_oid_fwcode_handling.b
 
-0x40cc38	switch_on_dwcode_c0_to_c3|m
+0x40e190	default_on_penstate_handling.b
+0x40e193	end_of_penstate_handling.b
 
-#0x40cfa0	switch_handler_fwcode_c0_unk|m
-#0x40cfa8	switch_handler_fwcode_c1_unk|m
-#0x40cfb0	switch_handler_fwcode_c2_unk|m
-#0x40cfb4	switch_handler_fwcode_c3_unk|m
-
-0x40cc58	switch_on_fwcode_70_to_85|m
-#0x40cf31	switch_handler_fwcode_70_unk|m
-#0x40cf35	switch_handler_fwcode_71_unk|m
-#0x40cf39	switch_handler_fwcode_72_unk|m
-#0x40cf40	switch_handler_fwcode_73_unk|m
-#0x40cf47	switch_handler_fwcode_74_unk|m
-#0x40cf4e	switch_handler_fwcode_75_unk|m
-#0x40cf55	switch_handler_fwcode_76_unk|m
-#0x40cf5c	switch_handler_fwcode_77_unk|m
-#0x40cf63	switch_handler_fwcode_78_unk|m
-#0x40cf6a	switch_handler_fwcode_80_unk|m
-#0x40cf72	switch_handler_fwcode_81_unk|m
-#0x40cf78	switch_handler_fwcode_82_unk|m
-#0x40cf80	switch_handler_fwcode_83_unk|m
-#0x40cf88	switch_handler_fwcode_84_unk|m
-#0x40cf90	switch_handler_fwcode_85_unk|m
-
-0x40cc8a	switch_on_fwcode_e0_to_ec|m
-#0x40cfb8	switch_handler_fwcode_e0_unk|m	
-#0x40cfbc	switch_handler_fwcode_e1_unk|m
-#0x40cfc0	switch_handler_fwcode_e2_unk|m
-#0x40cfdd	switch_handler_fwcode_e3_unk|m
-#0x40cff6	switch_handler_fwcode_e4_unk|m
-#0x40cfd9	switch_handler_fwcode_e5_unk|m
-#0x40d00f	switch_handler_fwcode_e6_unk|m
-#0x40d05e	switch_handler_fwcode_e7_unk|m
-#0x40d062	switch_handler_fwcode_e8_unk|m
-#0x40d079	switch_handler_fwcode_e9_unk|m
-#0x40d090	switch_handler_fwcode_ea_unk|m
-#0x40d09a	switch_handler_fwcode_eb_unk|m
-#0x40d09e	switch_handler_fwcode_ec_unk|m
-
-0x40cccb	handler_fwcode_FF_unk|m
-0x40d0c0	end_of_fwcode_handling|m
-
-#0x40d0d6	Switch_over_Fwcodes_stk(fwcode)|c
-
-#0x40d5ab	switch_handler_fwcode_c0_unk|c
-#0x40d5b3	switch_handler_fwcode_c1_unk|c
-#0x40d5bb	switch_handler_fwcode_c2_unk|c
-#0x40d5bf	switch_handler_fwcode_c3_unk|c
-#0x40d5c3	switch_handler_fwcode_c4_unk|c
-#0x40d5da	switch_handler_fwcode_cc_unk|c
-#0x40d5de	switch_handler_fwcode_cd_unk|c
-#0x40d5e2	switch_handler_fwcode_da_unk|c
-#0x40d607	switch_handler_fwcode_db_unk|c
-#0x40d62c	switch_handler_fwcode_dc_unk|c
-#0x40d648	switch_handler_fwcode_dd_unk|c
-#0x40d664	switch_handler_fwcode_de_unk|c
-#0x40d680	switch_handler_fwcode_e0_unk|c
-#0x40d684	switch_handler_fwcode_e1_unk|c
-#0x40d688	switch_handler_fwcode_e2_unk|c
-#0x40d6a9	switch_handler_fwcode_e3_unk|c
-#0x40d6a5	switch_handler_fwcode_e4_unk|c
-#0x40d6c6	switch_handler_fwcode_e5_unk|c
-#0x40d6e3	switch_handler_fwcode_e6_unk|c
-#0x40d711	switch_handler_fwcode_e7_unk|c
-#0x40d701	switch_handler_fwcode_e8_unk|c
-#0x40d705	switch_handler_fwcode_e9_unk|c
-#0x40d709	switch_handler_fwcode_ea_unk|c
-#0x40d70d	switch_handler_fwcode_eb_unk|c
-#0x40d719	switch_handler_fwcode_ec_unk|c
-#0x40d71d	switch_handler_fwcode_ed_unk|c
-#0x40d721	switch_handler_fwcode_ee_unk|c
-#0x40d715	switch_handler_fwcode_ef_unk|c
-#0x40d815	switch_handler_fwcode_MULTI_unk|c
-
-0x40d2ce	switch_handler_fwcode_30_volplus|c 
-0x40d2dc	switch_handler_fwcode_31_volminus|c
-#0x40d2ea	switch_handler_fwcode_32_unk|c
-#0x40d2f0	switch_handler_fwcode_33_unk|c
-0x40d2f6	switch_handler_fwcode_40_mp3|c
-#0x40d2fe	switch_handler_fwcode_41_unk|c
-0x40d37e	switch_handler_fwcode_42_mp3_pause|c
-0x40d388	switch_handler_fwcode_43_mp3_play|c
-0x40d408	switch_handler_fwcode_44_mp3_stop|c
-0x40d40c	switch_handler_fwcode_45_mp3_next|c
-0x40d478	switch_handler_fwcode_46_mp3_prev|c
-#0x40d4e4	switch_handler_fwcode_47_unk|c
-#0x40d4e8	switch_handler_fwcode_48_unk|c
-#0x40d4ee	switch_handler_fwcode_49_unk|c
-#0x40d4f3	switch_handler_fwcode_4a_unk|c
-#0x40d4f9	switch_handler_fwcode_4b_unk|c
-#0x40d4ff	switch_handler_fwcode_4c_unk|c
-0x40d516	switch_handler_fwcode_50_compare|c 
-#0x40d51e	switch_handler_fwcode_51_unk|c
-
-0x40d2a5	handler_fwcode_00_unk|c
-0x40d2b2	handler_fwcode_10_bookid|c
-0x40d2c2	handler_fwcode_11_unk|c
-0x40d2ca	handler_fwcode_12_unk|c
-
-#0x40d53a	switch_handler_fwcode_70_unk|c
-#0x40d53e	switch_handler_fwcode_71_unk|c
-#0x40d542	switch_handler_fwcode_72_unk|c
-#0x40d549	switch_handler_fwcode_73_unk|c
-#0x40d550	switch_handler_fwcode_74_unk|c
-#0x40d557	switch_handler_fwcode_75_unk|c
-#0x40d55e	switch_handler_fwcode_76_unk|c
-#0x40d565	switch_handler_fwcode_77_unk|c
-#0x40d56c	switch_handler_fwcode_78_unk|c
-0x40d573	switch_handler_fwcode_80_stop|c
-#0x40d57b	switch_handler_fwcode_81_unk|c
-#0x40d583	switch_handler_fwcode_82_unk|c
-#0x40d58b	switch_handler_fwcode_83_unk|c
-#0x40d593	switch_handler_fwcode_84_unk|c
-#0x40d59b	switch_handler_fwcode_85_unk|c
-
-0x40d526	handler_fwcode_60_unk|c
-0x40d52e	handler_fwcode_61_unk|c
-0x40d532	handler_fwcode_62_unk|c
-0x40d5a3	handler_fwcode_b0_unk|c
-
-
-#0x40d725	switch_handler_fwcode_f01_unk|c
-#0x40d729	switch_handler_fwcode_f0c_unk|c
-#0x40d72d	switch_handler_fwcode_f0d_unk|c
-#0x40d731	switch_handler_fwcode_f0e_unk|c
-#0x40d735	switch_handler_fwcode_f0f_unk|c
-#0x40d74b	switch_handler_fwcode_f10_unk|c
-#0x40d74f	switch_handler_fwcode_f11_unk|c
-#0x40d753	switch_handler_fwcode_f12_unk|c
-#0x40d757	switch_handler_fwcode_f13_unk|c
-#0x40d75b	switch_handler_fwcode_f14_unk|c
-#0x40d75f	switch_handler_fwcode_f15_unk|c
-#0x40d763	switch_handler_fwcode_f16_unk|c
-
-#0x40d7ae	switch_handler_fwcode_400_unk|c
-#0x40d7be	switch_handler_fwcode_401_unk|c
-#0x40d7c2	switch_handler_fwcode_402_unk|c
-#0x40d79e	switch_handler_fwcode_403_unk|c
-#0x40d80e	switch_handler_fwcode_404_to_408_unk|c
-
-#0x40d7c6	switch_handler_fwcode_108_unk|c
-#0x40d7da	switch_handler_fwcode_109_unk|c
-#0x40d7de	switch_handler_fwcode_10a_unk|c
-#0x40d7e2	switch_handler_fwcode_10b_unk|c
-#0x40d7e6	switch_handler_fwcode_10c_unk|c
-
-0x40d7ea	handler_fwcode_501_unk|c
-0x40d7fc	handler_fwcode_502_unk|c
-0x40d2a9	handler_fwcode_504_unk|c
-0x40d78e	handler_fwcode_201d_unk|c
-0x40d296	handler_fwcode_2020_unk|c
-0x40d767	handler_fwcode_2000_unk|c
-0x40d786	handler_fwcode_2001_unk|c
-0x40d78a	handler_fwcode_2002_unk|c
-0x40d796	handler_fwcode_7000_unk|c
-0x40d79a	handler_fwcode_7001_unk|c
-0x40da5e	end_of_fwcode_handling|c
-
-
-0x40e193	default_on_penstate_processing|b
-#0x40dff3	switch_on_penstate_01_unk|b
-#0x40dff9	switch_on_penstate_02_unk|b
-#0x40dfff	switch_on_penstate_03_unk|b
-#0x40e005	switch_on_penstate_05_unk|b
-#0x40e00b	switch_on_penstate_06_unk|b
-#0x40e011	switch_on_penstate_08_unk|b
-#0x40e02b	switch_on_penstate_09_unk|b
-#0x40e046	switch_on_penstate_0a_unk|b
-#0x40e04b	switch_on_penstate_0b_unk|b
-#0x40e051	switch_on_penstate_0c_unk|b
-#0x40e057	switch_on_penstate_0d_unk|b
-#0x40e05d	switch_on_penstate_0e_unk|b
-#0x40e063	switch_on_penstate_0f_unk|b
-#0x40e069	switch_on_penstate_10_unk|b
-#0x40e06f	switch_on_penstate_11_unk|b
-#0x40e075	switch_on_penstate_12_unk|b
-#0x40e07b	switch_on_penstate_13_unk|b
-#0x40e081	switch_on_penstate_14_unk|b
-#0x40e087	switch_on_penstate_15_unk|b
-#0x40e08d	switch_on_penstate_16_unk|b
-#0x40e093	switch_on_penstate_17_unk|b
-#0x40e099	switch_on_penstate_18_unk|b
-#0x40e09f	switch_on_penstate_19_unk|b
-#0x40e0a5	switch_on_penstate_1a_unk|b
-#0x40e0ab	switch_on_penstate_1b_unk|b
-#0x40e0b1	switch_on_penstate_1c_unk|b
-#0x40e0b7	switch_on_penstate_1d_unk|b
-#0x40e0bd	switch_on_penstate_1e_unk|b
-#0x40e0c2	switch_on_penstate_1f_unk|b
-#0x40e0c7	switch_on_penstate_20_unk|b
-#0x40e0cc	switch_on_penstate_21_unk|b
-#0x40e0d2	switch_on_penstate_22_unk|b
-#0x40e0d8	switch_on_penstate_23_unk|b
-#0x40e0de	switch_on_penstate_24_unk|b
-#0x40e0e3	switch_on_penstate_25_unk|b
-#0x40e0e9	switch_on_penstate_26_unk|b
-#0x40e0ef	switch_on_penstate_27_unk|b
-#0x40e0f5	switch_on_penstate_28_unk|b
-#0x40e0fb	switch_on_penstate_29_unk|b
-#0x40e101	switch_on_penstate_2a_unk|b
-#0x40e106	switch_on_penstate_2b_unk|b
-#0x40e10b	switch_on_penstate_2c_unk|b
-#0x40e110	switch_on_penstate_2d_unk|b
-#0x40e116	switch_on_penstate_2e_unk|b
-#0x40e11c	switch_on_penstate_2f_unk|b
-#0x40e122	switch_on_penstate_30_unk|b
-#0x40e128	switch_on_penstate_31_unk|b
-#0x40e12e	switch_on_penstate_32_unk|b
-#0x40e134	switch_on_penstate_34_unk|b
-#0x40e13a	switch_on_penstate_35_unk|b
-#0x40e140	switch_on_penstate_36_unk|b
-#0x40e145	switch_on_penstate_37_unk|b
-#0x40e14a	switch_on_penstate_38_unk|b
-#0x40e14f	switch_on_penstate_39_unk|b
-#0x40e154	switch_on_penstate_3a_unk|b
-#0x40e159	switch_on_penstate_3b_unk|b
-#0x40e15e	switch_on_penstate_3c_unk|b
-#0x40e163	switch_on_penstate_3d_unk|b
-#0x40e168	switch_on_penstate_3e_unk|b
-#0x40e16d	switch_on_penstate_3f_unk|b
-#0x40e172	switch_on_penstate_40_unk|b
-#0x40e178	switch_on_penstate_41_unk|b
-#0x40e17d	switch_on_penstate_42_unk|b
-#0x40e182	switch_on_penstate_43_unk|b
-#0x40dfd6	switch_on_penstate_44_unk|b
-#0x40dfdc	switch_on_penstate_45_unk|b
-#0x40e190	switch_on_penstate_48_unk|b
-#0x40e187	switch_on_penstate_4a_unk|b
-
-0x40eb1e	handler_button_fwcode.1_60_unk
-0x40eb28	handler_button_fwcode.1_61_unk
-0x40eb2c	handler_button_fwcode.1_62_unk
-0x40ea99	handler_button_fwcode.1_10_bookid
-0x40ea8b	handler_button_fwcode.1_11_unk
-0x40ecd1	handler_button_fwcode.1_90_to_af
+0x40ea95	handler_button_fwcode.1_ff
+0x40eb1e	handler_button_fwcode.1_60
+0x40eb28	handler_button_fwcode.1_61
+0x40eb2c	handler_button_fwcode.1_62
+0x40ea99	handler_button_fwcode.1_10_or_20_shutdown
+0x40ea8b	handler_button_fwcode.1_11
+0x40ecd1	handler_button_fwcode.1_90_to_af_modes
 0x40ea00	switch_on_button_fwcode.1_c0_to_c3
 0x40ea20	switch_on_button_fwcode.1_70_to_85
 0x40ea52	switch_on_button_fwcode.1_b0_to_ec
+0x40ecf1	end_of_button_fwcode_handling.1
 
 0x40eef8	handler_oid_fwcode.1_0
 0x40ef07	handler_oid_fwcode.1_10
@@ -3458,7 +2857,7 @@ skip 0x2bf5e
 0x40f29b	handler_oid_fwcode.1_7001
 0x40f43c	handler_oid_fwcode.1_ranges
 0x40f448	handler_oid_fwcode.1_20_to_2f
-0x40f48d	handler_oid_fwcode.1_90_to_af
+0x40f48d	handler_oid_fwcode.1_90_to_af_modes
 0x40f4c6	handler_oid_fwcode.1_d0_to_d9
 0x40f500	handler_oid_fwcode.1_f02_to_f0b
 0x40f51a	handler_oid_fwcode.1_f0_to_f9
@@ -3472,39 +2871,63 @@ skip 0x2bf5e
 0x40f69e	handler_oid_fwcode.1_200_to_2ff
 0x40f6c1	handler_oid_fwcode.1_300_to_3ff
 0x40f6d6	handler_oid_fwcode.1_default
-0x40f6d8	oid_fwcode.1_end
+0x40f6d8	end_of_oid_fwcode_handling.1
 
-#0x40f090	switch_handler_fwcode_c0_unk|e
-#0x40f09a	switch_handler_fwcode_c1_unk|e
-#0x40f0a4	switch_handler_fwcode_c2_unk|e
-#0x40f0a8	switch_handler_fwcode_c3_unk|e
-#0x40f0ac	switch_handler_fwcode_c4_unk|e
-#0x40f41c	switch_handler_fwcode_c5_unk|e
-#0x40f42c	switch_handler_fwcode_c6_unk|e
-#0x40f43c	switch_handler_fwcode_MULTI_unk|e
-#0x40f0c5	switch_handler_fwcode_cc_unk|e
-#0x40f0c9	switch_handler_fwcode_cd_unk|e
-#0x40f0cd	switch_handler_fwcode_da_unk|e
-#0x40f0f4	switch_handler_fwcode_db_unk|e
-#0x40f11b	switch_handler_fwcode_dc_unk|e
-#0x40f139	switch_handler_fwcode_dd_unk|e
-#0x40f157	switch_handler_fwcode_de_unk|e
-#0x40f175	switch_handler_fwcode_e0_unk|e
-#0x40f179	switch_handler_fwcode_e1_unk|e
-#0x40f17d	switch_handler_fwcode_e2_unk|e
-#0x40f1a0	switch_handler_fwcode_e3_unk|e
-#0x40f19c	switch_handler_fwcode_e4_unk|e
-#0x40f1bf	switch_handler_fwcode_e5_unk|e
-#0x40f1de	switch_handler_fwcode_e6_unk|e
-#0x40f20e	switch_handler_fwcode_e7_unk|e
-#0x40f1fe	switch_handler_fwcode_e8_unk|e
-#0x40f202	switch_handler_fwcode_e9_unk|e
-#0x40f206	switch_handler_fwcode_ea_unk|e
-#0x40f20a	switch_handler_fwcode_eb_unk|e
-#0x40f216	switch_handler_fwcode_ec_unk|e
-#0x40f21a	switch_handler_fwcode_ed_unk|e
-#0x40f21e	switch_handler_fwcode_ee_unk|e
-#0x40f212	switch_handler_fwcode_ef_unk|e
+0x40fcd6	default_on_penstate_handling.1
+0x40fce4	end_of_penstate_handling.1
+
+0x41171e	end_of_quiz_state_handling
+
+0x411a24	handler_button_fwcode.8_other
+0x411a30	handler_button_fwcode.8_90_to_af_modes
+
+0x41200d	handler_oid_fwcode.8_other_and_ranges
+0x4122ec	end_of_oid_fwcode_handling.8
+
+0x41254f	default_on_penstate_handling.8
+0x412552	end_of_penstate_handling.8
+
+0x413650	handler_oid_fwcode.2_other_and_ranges
+0x413899	end_of_oid_fwcode_handling.2
+
+0x413be9	default_on_penstate_handling.2
+0x413bec	end_of_penstate_handling.2
+
+0x4143aa	handler_button_fwcode.9_other
+0x4143b6	handler_button_fwcode.9_90_to_af_modes
+
+0x41495a	handler_oid_fwcode.9_other_and_ranges
+0x414bc7	end_of_oid_fwcode_handling.9
+
+0x414e25	default_on_penstate_handling.9
+0x414e28	end_of_penstate_handling.9
+
+0x4154b7	handler_button_fwcode.3_other
+0x4154c3	handler_button_fwcode.3_90_to_af_modes
+
+0x415a1e	handler_oid_fwcode.3_other_and_ranges
+0x415c67	end_of_oid_fwcode_handling.3
+
+0x415f72	default_on_penstate_handling.3
+0x415f75	end_of_penstate_handling.3
+
+0x4166ed	handler_oid_fwcode.4_other_and_ranges
+0x4166e4	handler_oid_fwcode.4_404_to_408
+
+0x416c4b	handler_button_fwcode.4_other
+0x416c57	handler_button_fwcode.4_90_to_af_modes
+
+0x417067	default_on_penstate_handling.4
+0x41706a	end_of_penstate_handling.4
+
+0x418507	handler_oid_fwcode.c_other_and_ranges
+0x418500	handler_oid_fwcode.c_404_to_408
+
+0x418f66	default_on_penstate_handling.c
+0x418f69	end_of_penstate_handling.c
+
+0x41ce75	handler_button_fwcode.c_other
+0x41ce81	handler_button_fwcode.c_90_to_af_modes
 
 0x40006e	naked_if_p4bit8_then_set_p0bit7
 
