@@ -1770,17 +1770,25 @@ skip 0x2bf5e
 0x282076	equalizer_set_active(bActive)
 0x28208b	equalizer_set_band_level(wBand,wLevel)
 0x2820b5	equalizer_reset_levels()
-0x28913e	FS_FileExists_maybe_stk(szPath,FLAG)_ret_errc_in_R0
+0x286e4f	follow_cluster_chain(wDevice,dwFirstCluster,dwCount)
+0x28913e	get_device__sd__xrom__sd2(szPath,wUpperBound)
 0x2897d0	MP3_ChangeSpeed(wDelta)
+0x289919	read_sector(wDevice,dwSector,pData)
 0x289fa3	naked_R1R0=X1X0_mod_Y1Y0
 0x289fa5	naked_R1R0=X1X0_div_Y1Y0
+0x28a0f1	strncmp(szLhs,szRhs,wCount)
 0x28a666	naked_R1R0=R1R0_mul_X1X0
 0x28a668	naked_R1R0=X1X0_mul_Y1Y0
 0x28aa63	FS_FReadSector(pData,pFile)
 0x28aa9c	FS_FWriteSector(pData,pFile)
+0x28aad5	read_first_sector(0,pDirEnt,0,pData)
+0x28b1e5	strchr(szStr,wChr)
+0x28b2b0	FS_DirRewind(pDir)
 0x28b4ca	strlen_stk(szString)_ret_in_R0
 0x28b6bc	delay_ms(milliseconds)
 0x28b873	MP3_Pause_OnOff(pauseOn)
+0x28b93d	FS_DirClose(pDir)
+0x28ba0f	toupper(wChar)
 0x28bb17	IMAADPCM_Pause_OnOff(pauseOn)
 0x28bd00	naked_X0=Get_word_from_table_at_R1R0
 0x28bcfd	naked_X0=Get_word_from_table_at_RAM[Ix0,Ix0+1]
@@ -1806,7 +1814,7 @@ skip 0x2bf5e
 0x007018	MP3_PlayProcess_Ext_probably_2
 0x0056aa	Something_with_updateA_chp
 0x0058a9	dynamic_halt
-0x006c11	naked_void_Init_of_large_mem_blocks_3e3d_3e0d(void)
+0x006c11	naked_void_Init_sector_buffer__bnl_book_ids(void)
 0x006948	lib_seek_stk(wHandle,dwPtr,wWhence)_return?
 0x006073	lib_fgetw_stk(wHandle,wBuffer)_return?
 0x006eb7	lib_fgetdw_stk(wHandle,wBuffer)_return?
@@ -2104,7 +2112,7 @@ skip 0x2bf5e
 	0x427eae	sound 2/207 测试模式 [Test Mode]
 
 
-0x42343e	maybe_some_check_for_update_file
+0x42343e	get_update_state__none__ready__finished()
 0x4222e3	Compute_2bin_pointers_stk(ptr_2bin,offset_sound)
 0x40a474	naked_void_Zero_stk(variable)_and_F0_words_after_it()
 0x428362	empty_fn_04
@@ -2125,7 +2133,7 @@ skip 0x2bf5e
 0x428251	naked_void_setup_port4_unk3(void)
 0x427dd1	naked_void_setup_port3_unk(void)
 0x41e8ba	Init_indirect_functions_in_book_ctx_and_lots_of_other_stuff
-0x424256	does_file_exist_stk(szPtr)
+0x424256	file_delete_probably(szPtr)
 0x4207f4	label_when_sdcard_not_detected
 	0x424fec	in this place we have prepared fname with sd:\ prefix
 0x427fea	naked_set_adc_to_battery
@@ -2297,12 +2305,22 @@ skip 0x2bf5e
 #book_ctx[0x5c] -> 0x422324 Play_sound_from_2bin_table_stk(sound_num)
 #book_ctx[0x5e] = pointer to quiz structure (0x3c41)
 
-0x0045e1	determine_int_format_in_memory(ptr)
+0x004035	dir_read(pDir)
+0x0045e1	determine_int_format_from_header(pData)
 0x004dff	SN95302_ParsingData(&flag,&data1,&data2)
+0x0058b0	read_sector_and_advance_impl(pData,pFile)
+0x005f6b	count_books__preload_50_book_ids(pDir,szFileExt)
+0x006162	get_book_id_from_header(pData)
+0x006314	fseek_sector_aligned(pFile,dwOffset,bRelative)
 0x006553	ptr_encrypt(ptr,bytekey1,bytekey2,dwkey,loc)
 0x006859	bytewise_xor2keys(key1,key2,dword)
+0x006bcb	read_sector_and_advance(pData,pFile,0)
+0x006d4c	read_sector__update_positions__impl(pFile,pDwPos_req,pDwPos_curr,pData)
 0x006dc0	map_id2ptr_stk(map_id)_ptr_in_R0
+0x006e5f	dir_find_file_by_extension(pDir,wIndex,szFileExt)
+0x006f09	dir_find_file_by_extension__seek(pDir,wIndex_ignored,szFileExt,dwDirByteSeek)
 0x006f50	delay_us(microseconds)
+0x006f88	read_sector__update_positions(pFile)
 0x40e610	mp3_temp_speed_up()
 0x40e68a	mp3_temp_speed_down()
 0x40e966	kill_repeat()
@@ -2318,6 +2336,10 @@ skip 0x2bf5e
 0x41bc72	autoadvance_oid_play_first()
 0x41c05a	oid_to_fwcode(dw_oid)
 0x41d4f6	quiz_time_step_1Hz()
+0x41e0bd	find_book(wFlag,wBookId)
+# flag = 1: find book with given id
+# flag = 2: next BNL (ignore id)
+# flag = 3: previous BNL (ditto)
 0x41eb57	start_quiz()
 0x41ef76	finalize_mp3_key(pKeyIn,pKeyOut,dwArg1,dwArg2)
 0x41f179	play_bnl_mp3(index)
@@ -2379,9 +2401,11 @@ skip 0x2bf5e
 0x4239d7	play_oid_sndt_index(oid,sound_index)
 0x423e3a	play_oid_sndt_from_start(oid)
 0x42418a	find_wrong_answer_by_oid(oid)
+0x424ab4	open_dir(szDirName)
 0x424cdb	initiate_poweroff()
 0x424e2e	load_question_types_0,1,3()
 0x4251d6	get_next_random_question()
+0x42549e	check_fname_and_strip_spaces(szDest,szSrc,wLength)
 0x4256ae	button_to_fwcode(button,is_long,mode)
 0x4256eb	b2fw_is_long
 0x4256d4	b2fw_is_short_odd_mode
@@ -2396,6 +2420,7 @@ skip 0x2bf5e
 0x425c5f	find_answer_by_oid(oid)
 0x425cd3	set_bedtime_timer_by_oid(wOID)
 0x425f06	read_3bin_tbl_unk(index)
+0x425f75	get_file_ext_uppercase(pDirEnt,pData)
 0x425fe3	evaluate_answer_sequential(ans_index)
 0x426051	set_mode_0_play_oid(oid)
 0x4260bf	prepare_answers_bitset(num_answers)
@@ -2420,6 +2445,7 @@ skip 0x2bf5e
 0x427086	wrong_answers_bit_clear(ans_index)
 0x4270c6	is_questions_bitset_defaulted()
 0x427145	set_mode_0_forget_last_oid()
+0x427183	count_files_bnl__save_in_global()
 0x427237	questions_bit_set(q_index)
 0x427273	xor_two_byte_keys(key1,key2,value)
 0x427322	answers_bit_check_zero(ans_index)
@@ -2456,6 +2482,7 @@ skip 0x2bf5e
 0x427f65	hw_random(void)_ret_in_R0
 0x427fa8	OID_close()
 0x427fbe	mp3_stop()
+0x42803e	get_file_length(pFile)
 0x4280a2	init_quiz_state_0()
 0x4280fe	get_num_quizzes()
 0x428213	play_sound_0x58()
@@ -2982,24 +3009,79 @@ skip 0x2bf5e
 #ram for rom
 0x023f	last_oid_command?
 
+#There is no memory management code, so all structures need to be 
+#pre-allocated. For open files and directories this means that 
+#there is a fixed number of slots that can be used, and further 
+#attempts will fail before some file is closed.
 
-0x3680	file_dirhandle_unk1
-0x3681	file_dirhandle_unk2_dw
-0x3683	file_dirhandle_unk3_dw
-0x3685	file_dirhandle_unk4_dw
-0x3687	file_dirhandle_unk5_dw
-0x3689	file_dirhandle_unk6_dw
-0x368b	file_dirhandle_unk7_dw
-0x368d	file_dirhandle_unk8_dw
-0x368f	file_dirhandle_unk9
-0x3690	file_dirhandle_is_open
-0x3691	file_dirhandle_unk10
-0x3692	file_dirhandle_unk11
+#0x35d2 dir_struct[2], doubling as DirEntry
+#size = 0x57
+#struct[0..1] initial cluster of file
+#struct[2..42] file name
+#struct[43] FAT entry type
+#struct[44] device (index into device_info)
+#struct[45..46]
+#struct[47..48]
+#struct[49..4a] initial cluster of directory
+#struct[4b..4c] current cluster
+#struct[4d..4e] preceding cluster
+#struct[4f..50]
+#struct[51..52] byte offset within FAT dir structure
+#struct[53..54] number of sectors of dir structure
+#struct[55]
+#struct[56]
 
-#3 of them? length of dirstruct 0x113
-#so up to 39c9
-#struct[0] bool = if it's used/opened
+#0x3680 file_struct[3]
+#size = 0x113
+#struct[0] device (index into device_info)
+#struct[1..2]
+#struct[3..4]
+#struct[5..6] first cluster
+#struct[7..8] current cluster
+#struct[9..a]
+#struct[b..c] file position (512B-sector aligned)
+#struct[d..e] file size (bytes)
+#struct[f] error code
+#  0    clean
+#  ff70 write error?
+#  ffa0 read error
+#  ffc0 attempt to read write-only file
+#  ffd0 seek failed (past end, not sector-aligned, wrong parameters)
+#  fff0 read past end
+#struct[10] is open (bool)
+#struct[11]
+#struct[12] open mode (bitset)
+#  1  read
+#  2  write
+#  4  append
+#  8  create (no truncate)
+#  10 binary
+#  20 delete?
+#struct[13..112] some sector-sized buffer
 
+0x39bd	sector_buffer__fslib
+
+#0x3abd some extra device info [3]
+#size = 7
+
+#0x3ad2 device_info[3]
+#size = 1e
+#  0: SD, 1: XROM, 2: SD2
+#struct[0] bytes per logical sector
+#struct[1] log2 ?
+#struct[b]
+#struct[f] FAT signature aa55
+#struct[10] 0: FAT16, 1: FAT32
+#struct[11] log2 bytes per logical sector
+#struct[12] log2 bytes per cluster
+#struct[13] log2 log.sectors per cluster
+#struct[16..17] first sector of FAT
+#struct[1c..1d] first sector of data
+
+#0x3b41 another sector-sized buffer
+
+0x3d05	num_files_bnl
+0x3d06	file_handle_bnl
 0x3d07	ptr_last_sound
 #length 3, allocated in 0x3d08 -- 0x3d0a
 #3d07[0] = type of sound, determines meaning of the content of 3d08[1-2] as follows:
@@ -3056,6 +3138,14 @@ skip 0x2bf5e
 0x3e01	mp3_speed
 0x3e02	da_fu_weng_mode
 0x3e04	some_random_seeding
+0x3e07	main_sector_buffer__pFile
+0x3e08	file_read_retry_count
+0x3e09	main_sector_buffer__byteoffset
+0x3e0b	main_sector_buffer__byteoffset_seek
+0x3e0d	preloaded_bnl_book_ids
+#size = 50 (0x32) words
+0x3e3f	main_sector_buffer
+0x3f3f	main_sector_buffer__byte_position
 
 
 
