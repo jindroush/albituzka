@@ -2317,11 +2317,18 @@ skip 0x2bf5e
 0x006314	fseek_sector_aligned(pFile,dwOffset,bRelative)
 0x006553	ptr_encrypt(ptr,bytekey1,bytekey2,dwkey,loc)
 0x006859	bytewise_xor2keys(key1,key2,dword)
+0x0069b4	conditional_flash_clear()
+0x006a80	flash_write(wKey,wValue)
+#0 volume+1 (only preserved across boots if fw_config_30204 & 40 != 0
+#1 last played MP3 file number
+#2 last played WAV file number
+#3 last book ID
 0x006bcb	read_sector_and_advance(pData,pFile,0)
 0x006d4c	read_sector__update_positions__impl(pFile,pDwPos_req,pDwPos_curr,pData)
 0x006dc0	map_id2ptr_stk(map_id)_ptr_in_R0
 0x006e5f	dir_find_file_by_extension(pDir,wIndex,szFileExt)
 0x006f09	dir_find_file_by_extension__seek(pDir,wIndex_ignored,szFileExt,dwDirByteSeek)
+0x006f2e	flash_read(wKey)
 0x006f50	delay_us(microseconds)
 0x006f88	read_sector__update_positions(pFile)
 0x40e610	mp3_temp_speed_up()
@@ -2446,6 +2453,7 @@ skip 0x2bf5e
 0x426840	locate_question_in_bnl(q_index)
 0x42689c	volume_increase()__return_is_max
 0x4269a9	choose_equalizer_preset(wPreset)_probably
+0x426951	set_power_on_volume()
 0x426aa8	volume_decrease()__return_is_min
 0x426b4f	get_table_element(table,index)
 0x426ba1	init_quiz_ctx()
@@ -3116,6 +3124,7 @@ skip 0x2bf5e
 
 0x3da0	battery_warning_flag
 0x3da3	flags_various
+#1, 2: some modes related to FWcodes 2xx, 3xx
 #8: battery low
 #20: SD card OK
 #80: bedtime timer set
@@ -3135,6 +3144,7 @@ skip 0x2bf5e
 #time in seconds before inactivity warning
 0x3db5	fw_config_30204__97
 0x3db6	fw_config_30207__04
+#power-on volume
 0x3db7	fw_config_30208__ffff
 0x3db8	fw_config_3020b__00030400
 #location of mp3tbl1
