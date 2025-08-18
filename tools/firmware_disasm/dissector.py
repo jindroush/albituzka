@@ -2063,7 +2063,7 @@ table_instruction_mutations = [
 		{ 'mnemonic': '=', 'param1t': REG, 'param1v': 'Ix1', 'param2t': IMM8, 'param2v': 0x6 }, 
 		{ 'mnemonic': 'Retff' }
 	],
-	'to': { 'mnemonic': '@IndirectCall(book_ctx)_store_fnptr_to_local_6_push_fhandle', 'param1': ( IMM8, 0x54 ), 'param2': None, 'comment': 'probably_mp3_player_stk(wHandle,dwOffset,dwLen,wFlag)' }
+	'to': { 'mnemonic': '@IndirectCall(book_ctx)_store_fnptr_to_local_6_push_fhandle', 'param1': ( IMM8, 0x54 ), 'param2': None, 'comment': 'probably_mp3_player_stk(pFile,dwOffset,dwLen,wFlag)' }
      },
 
      {
