@@ -1618,8 +1618,10 @@ skip 0x2bf5e
 0x0009c8	naked_R0=Y0_lshift_X0
 0x0009ca	naked_R1=R0_lshift_X0
 0x0009cd	naked_R0=RAM[Ix0]_lshift_X0
+0x0009cf	naked_R1=RAM[Ix0]_lshift_X0
 0x0009d7	naked_R0=local(Y0)_lshift_X0
 0x0009da	naked_R1=local(Y0)_lshift_X0
+0x0009de	naked_R0=R0_rshift_X0
 
 0x000a01	naked_RAM[Ix1]=RAM[Ix0]_rshift_X0
 0x000a06	naked_RAM[Ix1]=R0_rshift_X0
@@ -1777,6 +1779,7 @@ skip 0x2bf5e
 0x289fa3	naked_R1R0=X1X0_mod_Y1Y0
 0x289fa5	naked_R1R0=X1X0_div_Y1Y0
 0x28a0f1	strncmp(szLhs,szRhs,wCount)
+0x28a661	naked_R1R0=R1R0_mul_Y1Y0
 0x28a666	naked_R1R0=R1R0_mul_X1X0
 0x28a668	naked_R1R0=X1X0_mul_Y1Y0
 0x28aa63	FS_FReadSector(pData,pFile)
@@ -3078,15 +3081,27 @@ skip 0x2bf5e
 #size = 1e
 #  0: SD, 1: XROM, 2: SD2
 #struct[0] bytes per logical sector
-#struct[1] log2 ?
-#struct[b]
+#struct[1] log.sectors per cluster
+#struct[2] reserved sectors
+#struct[3] number of FATs (but treated to be 2)
+#struct[4] number of root entries (for FAT16)
+#struct[5] "small" number of sectors
+#struct[6] sectors per FAT (FAT16)
+#struct[7..8] "big" number of sectors
+#struct[9..a] sectors per FAT (FAT32)
+#struct[b..c] root directory first cluster (FAT32)
+#struct[d] FAT32 ext flags
+#struct[e] FAT32 info sector
 #struct[f] FAT signature aa55
 #struct[10] 0: FAT16, 1: FAT32
 #struct[11] log2 bytes per logical sector
 #struct[12] log2 bytes per cluster
 #struct[13] log2 log.sectors per cluster
-#struct[16..17] first sector of FAT
-#struct[1c..1d] first sector of data
+#struct[14..15] start of partition (= first sector)
+#struct[16..17] start of first FAT
+#struct[18..19] start of second FAT
+#struct[1a..1b] start of root directory
+#struct[1c..1d] start of data
 
 #0x3b41 another sector-sized buffer
 
@@ -3102,6 +3117,7 @@ skip 0x2bf5e
 0x3da0	battery_warning_flag
 0x3da3	flags_various
 #8: battery low
+#20: SD card OK
 #80: bedtime timer set
 #1000: silent mode
 0x3da4	book_open_explain_switch
