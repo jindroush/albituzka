@@ -1725,8 +1725,10 @@ skip 0x2bf5e
 0x000c84	naked_Y1Y0=local(X1,X1+1)
 0x000c87	naked_Y1Y0=local(Y1,Y1+1)
 
-0x0000d7	naked_X0=X1_div_Y1
-0x000c33	naked_X0=X1_div_Y1_signed
+0x0000d7	naked_X0=X1_div_Y1__Y0=X1_mod_Y1
+0x000c99	naked_X0=X1_mod_Y1
+0x000c33	naked_X0=X1_div_Y1_signed__Y0=X1_mod_Y1
+0x000c5c	naked_X0=X1_mod_Y1_signed
 
 0x000c9d	naked_X1X0=ROM[X0:Ix0,X0:Ix0+1]
 0x000ca1	naked_Y1Y0=ROM[X1:Ix1,X1:Ix1+1]
@@ -1762,8 +1764,6 @@ skip 0x2bf5e
 0x000c51	naked_pop_4_words
 0x000c53	naked_pop_3_words
 0x000c54	naked_pop_Y0_words
-
-0x000c99	naked_X0=X1_mod_Y1
 
 
 #rom2
@@ -1861,7 +1861,7 @@ skip 0x2bf5e
 0x428014	Init_timers
 0x4280c8	Init_OID_module_variables
 0x427f07	Init_3dd6_to_3dce
-0x4281df	naked_void_Init_3df4_to_3df9(void)
+0x4281df	naked_void_Init_quickmatch_full(void)
 0x427eef	Zero_3fa0_to_4000
 0x4268f7	Initialize_OID_module_if_not_yet_initialized
 0x427b58	Initialize_OID_module_unconditionally
@@ -1873,8 +1873,8 @@ skip 0x2bf5e
 0x426f36	Copy_WRAM_to_PRAM?
 0x4282b5	naked_void_nop_dbgprint(...)
 0x40a467	naked_void_Init_3fdd_3fa0_3ff2_3ff3(void)
-0x428342	naked_void_Get_[3df5]_in_R0(void)
-0x428346	naked_void_Get_[3df3]_in_R0(void)
+0x428342	naked_void_Get_quickmatch_active_in_R0(void)
+0x428346	naked_void_Get_quickmatch_error_counter_in_R0(void)
 0x42834a	naked_void_Get_volume_in_R0(void)
 0x428352	naked_void_Get_mp3_speed_in_R0(void)
 0x428356	naked_void_ClearPort0Bit7_2(void)
@@ -1885,7 +1885,7 @@ skip 0x2bf5e
 0x42041f	naked_void_SetTimer0_to_~400Hz_repeat
 0x42835c	call_0002ea()
 0x428290	naked_void_get_book_ctx[0x3f]_ret_in_R0
-0x42827c	naked_void_Init_3df4_3df5_3df3(void)
+0x42827c	naked_void_Init_quickmatch_state(void)
 0x428286	naked_get_book_ctx[0x0](void)_ret_in_R0
 0x428272	naked_void_just_a_nop_2__return_0(void)
 0x42822d	naked_void_Init_3fe9=ffff_3ff6_3fa6(void)
@@ -2328,6 +2328,7 @@ skip 0x2bf5e
 0x40e704	da_fu_weng_find_unplayed_sound(wBitset,wLength)
 0x40e748	da_fu_weng_get_next_sound_index(wOID)
 0x410000	quiz_state_react(oid)
+0x412a7f	mp3_player_play(szFileName)
 0x417277	read_quiz(quiz_index)
 0x418f6e	load_question_types_4,5,6,8,9,a,10,11()
 0x419601	determine_int_format_from_handle(pFile)
@@ -2394,17 +2395,25 @@ skip 0x2bf5e
 0x422a78	evaluate_answer_types_0,3_or_question(oid)
 0x42306e	get_next_question_index()
 0x423164	get_first_question_index()
+0x42352f	playlist_next_dir_seq(pDir,szDir,szFileExt,wCount,pwChosenIndex,szChosenFName)
+0x42361e	playlist_next_same(pDir,szDir,szFileExt,wCount,pwChosenIndex,szChosenFName)
+0x42370d	time_step_10Hz()
+0x4238eb	playlist_next_random(pDir,szDir,szFileExt,wCount,pwChosenIndex,szChosenFName)
+0x4239d7	play_oid_sndt_index(oid,sound_index)
 0x423d5e	play_system_sound_from_bnl(wId)
 #Only called from play_system_sound(id), see documentation there.
 	0x423d6a	tbl_syssound_id_to_map_id
-0x42370d	time_step_10Hz()
-0x4239d7	play_oid_sndt_index(oid,sound_index)
 0x423e3a	play_oid_sndt_from_start(oid)
+0x423f14	playlist_next_dir_seq_once(pDir,szDir,szFileExt,wCount,pwChosenIndex,szChosenFName)
+0x423fe9	autoadvance_play_next_oid()
+0x4240bc	autoadvance_play_prev_oid()
 0x42418a	find_wrong_answer_by_oid(oid)
+0x4247bf	play_current_oid_mode_1()
 0x424ab4	open_dir(szDirName)
 0x424cdb	initiate_poweroff()
 0x424e2e	load_question_types_0,1,3()
 0x4251d6	get_next_random_question()
+0x425385	repeat_last_oid(wNumTimes)
 0x42549e	check_fname_and_strip_spaces(szDest,szSrc,wLength)
 0x4256ae	button_to_fwcode(button,is_long,mode)
 0x4256eb	b2fw_is_long
@@ -2413,6 +2422,7 @@ skip 0x2bf5e
 0x425729	b2fw_final_result
 0x425727	b2fw_invalid_result
 0x42572e	find_next_nonempty_mode_within(oidt_start,size)
+0x4258a1	poll_interrupts()
 0x425995	read_book_modes()
 0x425a0f	read_book_id()
 0x425a89	prepare_questions_bitset(num_questions)
@@ -3090,7 +3100,14 @@ skip 0x2bf5e
 #  3: OID, mode 0 sound table (book_mode set to 0 on replay).
 
 0x3da0	battery_warning_flag
+0x3da3	flags_various
+#8: battery low
+#80: bedtime timer set
+#1000: silent mode
+0x3da4	book_open_explain_switch
 0x3da6	oid_repeat
+0x3da7	action_data_2
+0x3da9	action_data_1
 0x3dab	penstate
 0x3dac	inactivity_timer
 0x3dad	poweroff_timer
@@ -3114,7 +3131,7 @@ skip 0x2bf5e
 0x3dc4	bedtime_timer_counter_10Hz
 0x3dc6	bedtime_timer_target
 0x3dc8	timer_counter_0.1Hz
-0x3dca	last_timer_value_bumped_every_second
+0x3dca	last_timer_value
 0x3dcc	timer_counter_10Hz
 
 0x3dd9	volume
@@ -3131,6 +3148,10 @@ skip 0x2bf5e
 0x3dea	button
 0x3ded	is_oid_module_initialized
 0x3dee	oid_from_sensor
+0x3df3	quickmatch_error_counter
+0x3df4	quickmatch_index
+0x3df5	quickmatch_active
+0x3df9	quickmatch_current_file
 0x3dfc	battery_last_value
 0x3dfd	battery_incidents_counter
 0x3dfe	main_mode_current
@@ -3146,6 +3167,11 @@ skip 0x2bf5e
 #size = 50 (0x32) words
 0x3e3f	main_sector_buffer
 0x3f3f	main_sector_buffer__byte_position
+0x3fe5	playlist_strategy
+#0: directory sequential (FWcode 4a)
+#1: directory sequential, once through (FWcode 4b)
+#2: random shuffle (FWcode 49)
+#3: loop one song (FWcode 48)
 
 
 
