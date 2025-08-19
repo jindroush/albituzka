@@ -1459,12 +1459,12 @@ skip 0x2bf5e
 	0x00075f	if PRAM memory checksum failed, continue boot process from other devices, otherwise jump to SysMain
 0x00076a	reset_handler_boot_from_other_devices
 
-0x0001d8	firmware_module_loader_stk(wModule)
+0x0001d8	firmware_module_loader_stk(wModuleNumber)
 	0x0001df	0x400080 -> signature of chip
 	0x000219	here is verified that firmware is for this chip
 	0x000222	number of modules read
 	0x000231	reading first word 
-	0x000238	checking with input
+	0x000238	checking with input, the 'boot' module has 0x80 in upper byte, we're looking for parameter 0 which satisfies 0x80 & 0x7F.
 	0x00023b	when found, call sub
 	0x000243	R0 is still passed out
 

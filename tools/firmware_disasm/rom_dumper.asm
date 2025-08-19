@@ -1,4 +1,6 @@
 ;uses assembly.py from s9ke github, with slighly added functionality (.word keyword, possibility to use labels in imm assignments)
+;several functions called are in 0x42xxxx address space, ie. firmware. To make this work, you'd need to find the same
+;functions in your firmware.
 
 ;free space in the original firmware
 seek(0x42a080)
